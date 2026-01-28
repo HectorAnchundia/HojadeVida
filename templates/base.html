@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/sections.css' %}">
     <link rel="stylesheet" href="{% static 'css/sidebar-icons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/pdf-export-new.css' %}">
+    <link rel="stylesheet" href="{% static 'css/export-control.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body {% if garaje_mode %}class="garaje-mode"{% endif %}>
@@ -29,7 +29,10 @@
                 <div class="profile-container">
                     {% if datos_personales %}
                         {% if datos_personales.varyingpic %}
-                        <img src="{{ datos_personales.varyingpic.url }}" alt="Foto de perfil" class="profile-image">
+                        <img src="{{ datos_personales.varyingpic.url }}" 
+                             alt="Foto de perfil" 
+                             class="profile-image"
+                             onerror="this.onerror=null; this.src='{% static 'img/default-profile.png' %}'; this.classList.add('fallback-image');">
                         {% else %}
                         <div class="profile-image bg-secondary d-flex align-items-center justify-content-center">
                             <i class="fas fa-user fa-3x"></i>
@@ -68,7 +71,7 @@
                     </a>
                 </div>
                 
-                <!-- El panel de exportación se agregará dinámicamente con JavaScript -->
+                <!-- Los botones de control se agregarán dinámicamente con JavaScript -->
                 {% endblock %}
             </div>
             
@@ -111,21 +114,12 @@
     <!-- jsPDF para exportación a PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
-    <!-- Verificar que jsPDF se ha cargado correctamente -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof jspdf === 'undefined' || typeof jspdf.jsPDF === 'undefined') {
-                console.error("ERROR: La biblioteca jsPDF no se ha cargado correctamente");
-            } else {
-                console.log("jsPDF cargado correctamente:", jspdf.version);
-            }
-        });
-    </script>
-    
     <!-- JavaScript personalizado -->
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/validaciones.js' %}"></script>
-    <script src="{% static 'js/pdf-export-new.js' %}"></script>
+    <script src="{% static 'js/export-pdf-unified.js' %}"></script>
+    <script src="{% static 'js/export-control.js' %}"></script>
+    <script src="{% static 'js/cloudinary-handler.js' %}"></script>
     
     {% block extra_js %}{% endblock %}
 </body>

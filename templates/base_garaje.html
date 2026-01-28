@@ -27,7 +27,10 @@
                 <div class="profile-container">
                     {% if datos_personales %}
                         {% if datos_personales.varyingpic %}
-                        <img src="{{ datos_personales.varyingpic.url }}" alt="Foto de perfil" class="profile-image">
+                        <img src="{{ datos_personales.varyingpic.url }}" 
+                             alt="Foto de perfil" 
+                             class="profile-image"
+                             onerror="this.onerror=null; this.src='{% static 'img/default-profile.png' %}'; this.classList.add('fallback-image');">
                         {% else %}
                         <div class="profile-image bg-secondary d-flex align-items-center justify-content-center">
                             <i class="fas fa-user fa-3x"></i>
@@ -133,6 +136,7 @@
     
     <!-- JavaScript personalizado -->
     <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/cloudinary-handler.js' %}"></script>
     
     <script>
     document.addEventListener('DOMContentLoaded', function() {

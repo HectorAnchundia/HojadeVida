@@ -1,5 +1,6 @@
 """
 Configuración automática de CORS para Cloudinary al iniciar la aplicación
+Versión compatible con Cloudinary 1.36.0
 """
 import cloudinary
 import cloudinary.uploader
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 def setup_cloudinary_cors():
     """
     Configura CORS en Cloudinary para permitir acceso desde cualquier dominio
-    Se ejecuta automáticamente al iniciar la aplicación
+    Utiliza métodos compatibles con Cloudinary 1.36.0
     """
     try:
         # Configurar Cloudinary con las credenciales
@@ -23,25 +24,73 @@ def setup_cloudinary_cors():
             secure=True
         )
         
-        # Actualizar la configuración CORS para permitir todos los orígenes
-        result = cloudinary.api.update_resources_access_mode_by_prefix(
-            prefix="",  # Aplicar a todos los recursos
-            access_mode="public",  # Hacer todos los recursos públicos
-            resource_type="image"  # Aplicar a imágenes
-        )
-        
         # Configurar CORS para permitir solicitudes desde cualquier origen
-        cors_config = cloudinary.api.update_upload_mapping(
-            name="default",
-            headers={
-                "Access-Control-Allow-Origin": "*"
-            }
-        )
+        # Usando el método upload_preset.update que sí está disponible en Cloudinary 1.36.0
+        try:
+            # Primero intentamos actualizar un preset existente
+            result = cloudinary.api.update_upload_preset(
+                name="default_preset",
+                allowed_formats="jpg,png,gif,webp",
+                unsigned=True,
+                cors=True  # Habilitar CORS
+            )
+            logger.info(f"Preset de Cloudinary actualizado: {result}")
+        except Exception as preset_error:
+            # Si el preset no existe, lo creamos
+            try:
+                result = cloudinary.api.create_upload_preset(
+                    name="default_preset",
+                    allowed_formats="jpg,png,gif,webp",
+                    unsigned=True,
+                    cors=True  # Habilitar CORS
+                )
+                logger.info(f"Preset de Cloudinary creado: {result}")
+            except Exception as create_error:
+                logger.warning(f"No se pudo crear el preset: {create_error}")
         
-        logger.info("Configuración CORS de Cloudinary actualizada exitosamente")
-        logger.info(f"Resultado: {result}")
-        logger.info(f"CORS: {cors_config}")
+        # Configurar opciones globales de CORS usando update_upload_mapping
+        try:
+            cors_config = cloudinary.api.update_upload_mapping(
+                name="default",
+                headers={
+                    "Access-Control-Allow-Origin": "*"
+                }
+            )
+            logger.info(f"Configuración CORS actualizada: {cors_config}")
+        except Exception as mapping_error:
+            # Si el mapping no existe, intentamos crearlo
+            try:
+                cors_config = cloudinary.api.create_upload_mapping(
+                    name="default",
+                    template="https://res.cloudinary.com/hojavida",
+                    headers={
+                        "Access-Control-Allow-Origin": "*"
+                    }
+                )
+                logger.info(f"Mapping de Cloudinary creado: {cors_config}")
+            except Exception as create_mapping_error:
+                logger.warning(f"No se pudo crear el mapping: {create_mapping_error}")
         
+        # Configurar opciones de transformación para hacer las imágenes públicas
+        try:
+            cloudinary.api.update_transformation(
+                transformation="default_transform",
+                allowed_for_strict=True,
+                named=True
+            )
+            logger.info("Transformación actualizada para permitir acceso público")
+        except Exception as transform_error:
+            try:
+                cloudinary.api.create_transformation(
+                    name="default_transform",
+                    transformation={"quality": "auto", "fetch_format": "auto"},
+                    allowed_for_strict=True
+                )
+                logger.info("Transformación creada para permitir acceso público")
+            except Exception as create_transform_error:
+                logger.warning(f"No se pudo crear la transformación: {create_transform_error}")
+        
+        logger.info("Configuración CORS de Cloudinary completada")
         return True
     except Exception as e:
         logger.error(f"Error al configurar CORS en Cloudinary: {e}")

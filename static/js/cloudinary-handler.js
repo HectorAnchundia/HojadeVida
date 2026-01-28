@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const folder = parts[parts.length - 2] || '';
         
         // Construir URL de Cloudinary
-        return `https://res.cloudinary.com/hojavida/image/upload/home/${filename}`;
+        return `https://res.cloudinary.com/hojavida/image/upload/v1769619044/${filename}`;
     }
     
     // Función para manejar errores de carga de imágenes

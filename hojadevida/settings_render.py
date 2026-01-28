@@ -26,6 +26,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'cv',  # Tu aplicación
+    'cloudinary_storage',  # Para Cloudinary
+    'cloudinary',  # Para Cloudinary
 ]
 
 MIDDLEWARE = [
@@ -37,6 +39,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'cv.middleware.CloudinaryPDFMiddleware',  # Middleware para manejar URLs de Cloudinary en PDFs
 ]
 
 ROOT_URLCONF = 'hojadevida.urls'
@@ -105,9 +108,27 @@ STATICFILES_DIRS = [
 # Configuración para servir archivos estáticos en producción con WhiteNoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Media files
+# Configuración de Cloudinary
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+    'SECURE': True,
+    'MEDIA_TAG': 'media',
+    'INVALID_VIDEO_ERROR_MESSAGE': 'Por favor sube un video válido.',
+    'INVALID_IMAGE_ERROR_MESSAGE': 'Por favor sube una imagen válida.',
+    'STATIC_TAG': 'static',
+}
+
+# Usar Cloudinary para almacenar archivos de medios
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# URL para archivos de medios (solo para desarrollo local)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Configuración específica para WeasyPrint y exportación de PDF
+WEASYPRINT_BASEURL = os.environ.get('WEASYPRINT_BASEURL', '')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -118,3 +139,8 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+# Crear un superusuario durante el despliegue
+DJANGO_SUPERUSER_USERNAME = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin')
+DJANGO_SUPERUSER_PASSWORD = os.environ.get('DJANGO_SUPERUSER_PASSWORD', '1234HRAA')
+DJANGO_SUPERUSER_EMAIL = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@example.com')

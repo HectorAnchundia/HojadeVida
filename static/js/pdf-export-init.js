@@ -44,6 +44,10 @@ document.addEventListener('DOMContentLoaded', function() {
             await cargarScript('/static/js/pdf-format-fixes.js');
             console.log('Mejoras de formato para PDF cargadas');
             
+            // Cargar la integración con Cloudinary
+            await cargarScript('/static/js/cloudinary-pdf-integration.js');
+            console.log('Integración con Cloudinary para PDF cargada');
+            
             // Aplicar parches específicos para corregir problemas de alineación
             aplicarParches();
             

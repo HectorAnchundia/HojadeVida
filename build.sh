@@ -16,11 +16,24 @@ python manage.py collectstatic --no-input --settings=hojadevida.settings_render
 echo "Ejecutando migraciones..."
 python manage.py migrate --settings=hojadevida.settings_render
 
+# Crear superusuario
+echo "Creando superusuario..."
+python manage.py shell -c "
+from django.contrib.auth.models import User
+username = 'admin'
+password = '1234HRAA'
+email = 'admin@example.com'
+if not User.objects.filter(username=username).exists():
+    User.objects.create_superuser(username=username, email=email, password=password)
+    print(f'Superusuario {username} creado con éxito')
+else:
+    user = User.objects.get(username=username)
+    user.set_password(password)
+    user.save()
+    print(f'Contraseña actualizada para el usuario {username}')
+" --settings=hojadevida.settings_render
+
 # Crear directorio para archivos estáticos si no existe
 mkdir -p staticfiles
-
-# Crear superusuario (usuario administrador)
-echo "Creando usuario administrador..."
-python create_admin.py
 
 echo "Build completado con éxito!"

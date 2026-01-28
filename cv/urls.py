@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from . import export_views
+from . import pdf_export
 
 urlpatterns = [
     # Vistas principales
@@ -15,4 +16,8 @@ urlpatterns = [
     
     # Endpoint para generar archivo comprimido
     path('generar-archivo-comprimido/', export_views.generar_archivo_comprimido, name='generar_archivo_comprimido'),
+    
+    # Exportación de PDF
+    path('export-pdf/', pdf_export.pdf_export_view, name='pdf_export_view'),
+    path('generate-pdf/', pdf_export.generate_pdf, name='generate_pdf'),
 ]

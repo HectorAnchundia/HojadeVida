@@ -40,6 +40,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'cv.middleware.CloudinaryPDFMiddleware',  # Middleware para manejar URLs de Cloudinary en PDFs
+    'cv.cloudinary_middleware.CloudinaryURLMiddleware',  # Nuevo middleware para URLs de Cloudinary
 ]
 
 ROOT_URLCONF = 'hojadevida.urls'
@@ -110,14 +111,21 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Configuración de Cloudinary
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', 'hojavida'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', '946365941112319'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', 'h7re7KwS3_yEqL0YbDTht0KGek4'),
     'SECURE': True,
     'MEDIA_TAG': 'media',
     'INVALID_VIDEO_ERROR_MESSAGE': 'Por favor sube un video válido.',
     'INVALID_IMAGE_ERROR_MESSAGE': 'Por favor sube una imagen válida.',
     'STATIC_TAG': 'static',
+    # Opciones adicionales para mejorar la accesibilidad
+    'CLOUDINARY_URL_OPTIONS': {
+        'secure': True,
+        'transformation': [{'fetch_format': 'auto', 'quality': 'auto'}],
+        'version': None,
+        'sign_url': False,
+    }
 }
 
 # Usar Cloudinary para almacenar archivos de medios

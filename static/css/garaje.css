@@ -1,0 +1,307 @@
+/* Estilos específicos para la página de Venta de Garaje */
+
+/* Estilos para el sidebar de venta de garaje */
+.garaje-mode .sidebar {
+    background: linear-gradient(135deg, #00348D 0%, #0047AB 100%);
+    width: 250px;
+    transition: all 0.3s ease;
+}
+
+.garaje-mode .sidebar.collapsed {
+    width: 70px;
+}
+
+/* Estilos para los filtros en el sidebar */
+.filtros-container-sidebar {
+    padding: 15px;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+.filtros-container-sidebar .filtros-title {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+    position: relative;
+}
+
+.filtros-container-sidebar .filtros-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.filtros-container-sidebar .form-label {
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.filtros-container-sidebar .form-control,
+.filtros-container-sidebar .form-select {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.filtros-container-sidebar .form-control:focus,
+.filtros-container-sidebar .form-select:focus {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.15);
+}
+
+.filtros-container-sidebar .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Ocultar completamente los filtros cuando el sidebar está colapsado */
+.sidebar.collapsed .filtros-container-sidebar {
+    display: none !important;
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Mostrar ícono de filtro cuando el sidebar está colapsado */
+.sidebar.collapsed .filtro-icon {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    margin: 15px auto;
+    color: white;
+    font-size: 1.3rem;
+    transition: all 0.3s ease;
+}
+
+.sidebar.collapsed .filtro-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+}
+
+/* Ocultar ícono de filtro cuando el sidebar está expandido */
+.sidebar:not(.collapsed) .filtro-icon {
+    display: none !important;
+}
+
+/* Estilos para la sección de productos */
+.garaje-container {
+    padding: 30px 0;
+}
+
+.garaje-title {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.garaje-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: var(--tech-gradient);
+}
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.producto-card {
+    background-color: var(--card-bg);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.producto-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px var(--shadow-color);
+}
+
+.producto-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.producto-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.producto-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.producto-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.producto-estado {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.estado-bueno {
+    background-color: rgba(66, 133, 244, 0.2);
+    color: #4285F4;
+}
+
+.estado-regular {
+    background-color: rgba(244, 180, 0, 0.2);
+    color: #F4B400;
+}
+
+.producto-description {
+    margin-bottom: 20px;
+    color: var(--text-light);
+    flex-grow: 1;
+}
+
+.producto-contact {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    background: var(--tech-gradient);
+    color: white;
+    text-align: center;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    margin-top: auto;
+}
+
+.producto-contact:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 71, 171, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 100px 20px;
+    background-color: var(--tertiary-color);
+    border-radius: 15px;
+    margin-top: 40px;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.empty-state p {
+    font-size: 1.2rem;
+    color: var(--text-light);
+}
+
+/* Estilos para la pantalla de bienvenida de la venta de garaje */
+.welcome-screen.garaje-welcome {
+    background: linear-gradient(135deg, rgba(0,71,171,0.1) 0%, rgba(0,71,171,0.05) 100%);
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 50px;
+}
+
+.welcome-screen.garaje-welcome .welcome-title {
+    color: var(--primary-color);
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.welcome-screen.garaje-welcome .welcome-subtitle {
+    font-size: 1.5rem;
+    color: var(--text-light);
+    margin-bottom: 40px;
+    max-width: 600px;
+}
+
+/* Modo oscuro */
+[data-theme="dark"] .filtros-container-sidebar .form-control,
+[data-theme="dark"] .filtros-container-sidebar .form-select {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .filtros-container-sidebar .form-control:focus,
+[data-theme="dark"] .filtros-container-sidebar .form-select:focus {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+    .garaje-mode .sidebar {
+        transform: translateX(-100%);
+        position: fixed;
+        z-index: 1040;
+    }
+    
+    .garaje-mode .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .garaje-mode .content {
+        margin-left: 0;
+    }
+    
+    .garaje-mode .sidebar-toggle {
+        display: block;
+    }
+}

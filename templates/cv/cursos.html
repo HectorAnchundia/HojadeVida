@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+
+{% block title %}Cursos y Educación{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card-item {
+        background-color: var(--card-bg);
+        border-radius: 10px;
+        border-left: 4px solid var(--primary-color);
+        margin-bottom: 20px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+    }
+    
+    .card-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+    
+    .card-info {
+        margin-bottom: 15px;
+    }
+    
+    .card-label {
+        font-weight: 600;
+        margin-right: 5px;
+        color: var(--text-color);
+    }
+    
+    .card-value {
+        color: var(--text-light);
+    }
+    
+    .card-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .btn-certificate {
+        flex: 1;
+        padding: 8px 15px;
+        border-radius: 5px;
+        text-align: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .btn-view {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .btn-view:hover {
+        background-color: var(--accent-color);
+        color: white;
+    }
+    
+    .btn-download {
+        background-color: var(--secondary-color);
+        color: white;
+    }
+    
+    .btn-download:hover {
+        background-color: var(--accent-color);
+        color: white;
+    }
+    
+    .btn-disabled {
+        background-color: var(--text-muted);
+        color: white;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+    
+    .section-divider {
+        margin: 40px 0;
+        border-top: 1px solid var(--border-color);
+        position: relative;
+    }
+    
+    .section-divider::before {
+        content: attr(data-title);
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--bg-color);
+        padding: 0 20px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+    
+    .en-curso-badge {
+        display: inline-block;
+        background-color: rgba(66, 133, 244, 0.2);
+        color: #4285F4;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-left: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="section" id="cursos">
+    <h2 class="section-title">Cursos y Educación</h2>
+    
+    <!-- Educación -->
+    <h3 class="subsection-title">Educación</h3>
+    
+    {% if educacion %}
+        {% for edu in educacion %}
+            <div class="card-item">
+                <h4 class="card-title">
+                    {{ edu.titulo }}
+                    {% if edu.en_curso %}
+                        <span class="en-curso-badge">En curso</span>
+                    {% endif %}
+                </h4>
+                
+                <div class="card-info">
+                    <span class="card-label">Institución:</span>
+                    <span class="card-value">{{ edu.institucion }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Periodo:</span>
+                    <span class="card-value">
+                        {{ edu.fecha_inicio|date:"d/m/Y" }} - 
+                        {% if edu.en_curso %}
+                            Actualidad
+                        {% else %}
+                            {{ edu.fecha_fin|date:"d/m/Y" }}
+                        {% endif %}
+                    </span>
+                </div>
+                
+                {% if edu.nivel_titulo %}
+                <div class="card-info">
+                    <span class="card-label">Nivel:</span>
+                    <span class="card-value">{{ edu.nivel_titulo }}</span>
+                </div>
+                {% endif %}
+                
+                {% if edu.area_conocimiento %}
+                <div class="card-info">
+                    <span class="card-label">Área:</span>
+                    <span class="card-value">{{ edu.area_conocimiento }}</span>
+                </div>
+                {% endif %}
+                
+                {% if edu.descripcion %}
+                <div class="card-info">
+                    <span class="card-label">Descripción:</span>
+                    <span class="card-value">{{ edu.descripcion }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="card-actions">
+                    {% if edu.rutatitulo %}
+                        <a href="{{ edu.rutatitulo.url }}" target="_blank" class="btn-certificate btn-view">
+                            <i class="fas fa-eye"></i> Ver título
+                        </a>
+                        <a href="{{ edu.rutatitulo.url }}" download class="btn-certificate btn-download">
+                            <i class="fas fa-download"></i> Descargar título
+                        </a>
+                    {% else %}
+                        <span class="btn-certificate btn-view btn-disabled">
+                            <i class="fas fa-eye-slash"></i> No hay título adjunto
+                        </span>
+                        <span class="btn-certificate btn-download btn-disabled">
+                            <i class="fas fa-download"></i> Descargar título
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-graduation-cap fa-3x mb-3"></i>
+            <p>No hay información de educación registrada.</p>
+        </div>
+    {% endif %}
+    
+    <div class="section-divider" data-title="Cursos"></div>
+    
+    <!-- Cursos -->
+    <h3 class="subsection-title">Cursos Realizados</h3>
+    
+    {% if cursos %}
+        {% for curso in cursos %}
+            <div class="card-item">
+                <h4 class="card-title">
+                    {{ curso.nombrecurso }}
+                    {% if curso.en_curso %}
+                        <span class="en-curso-badge">En curso</span>
+                    {% endif %}
+                </h4>
+                
+                <div class="card-info">
+                    <span class="card-label">Entidad:</span>
+                    <span class="card-value">{{ curso.entidadpatrocinadora }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Periodo:</span>
+                    <span class="card-value">
+                        {{ curso.fechainicio|date:"d/m/Y" }} - 
+                        {% if curso.en_curso %}
+                            Actualidad
+                        {% else %}
+                            {{ curso.fechafin|date:"d/m/Y" }}
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Total horas:</span>
+                    <span class="card-value">{{ curso.totalhoras }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Descripción:</span>
+                    <span class="card-value">{{ curso.descripcioncurso }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Contacto:</span>
+                    <span class="card-value">{{ curso.nombrereconocimientoasignado }} - {{ curso.telefonocontactoasignado }}</span>
+                </div>
+                
+                <div class="card-actions">
+                    {% if curso.rutacertificado %}
+                        <a href="{{ curso.rutacertificado.url }}" target="_blank" class="btn-certificate btn-view">
+                            <i class="fas fa-eye"></i> Ver certificado
+                        </a>
+                        <a href="{{ curso.rutacertificado.url }}" download class="btn-certificate btn-download">
+                            <i class="fas fa-download"></i> Descargar certificado
+                        </a>
+                    {% else %}
+                        <span class="btn-certificate btn-view btn-disabled">
+                            <i class="fas fa-eye-slash"></i> No hay certificado adjunto
+                        </span>
+                        <span class="btn-certificate btn-download btn-disabled">
+                            <i class="fas fa-download"></i> Descargar certificado
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-book fa-3x mb-3"></i>
+            <p>No hay cursos registrados.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

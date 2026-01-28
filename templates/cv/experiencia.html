@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}Experiencia Laboral{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card-item {
+        background-color: var(--card-bg);
+        border-radius: 10px;
+        border-left: 4px solid var(--primary-color);
+        margin-bottom: 20px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+    }
+    
+    .card-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+    
+    .card-info {
+        margin-bottom: 15px;
+    }
+    
+    .card-label {
+        font-weight: 600;
+        margin-right: 5px;
+        color: var(--text-color);
+    }
+    
+    .card-value {
+        color: var(--text-light);
+    }
+    
+    .card-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .btn-certificate {
+        flex: 1;
+        padding: 8px 15px;
+        border-radius: 5px;
+        text-align: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .btn-view {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .btn-view:hover {
+        background-color: var(--accent-color);
+        color: white;
+    }
+    
+    .btn-download {
+        background-color: var(--secondary-color);
+        color: white;
+    }
+    
+    .btn-download:hover {
+        background-color: var(--accent-color);
+        color: white;
+    }
+    
+    .btn-disabled {
+        background-color: var(--text-muted);
+        color: white;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+    
+    .actualidad-badge {
+        display: inline-block;
+        background-color: rgba(76, 175, 80, 0.2);
+        color: #4CAF50;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-left: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="section" id="experiencia-laboral">
+    <h2 class="section-title">Experiencia Laboral</h2>
+    
+    {% if experiencias_laborales %}
+        {% for experiencia in experiencias_laborales %}
+            <div class="card-item">
+                <h4 class="card-title">
+                    {{ experiencia.cargodesempenado }} - {{ experiencia.nombreempresa }}
+                    {% if experiencia.trabajo_actual %}
+                        <span class="actualidad-badge">Actualidad</span>
+                    {% endif %}
+                </h4>
+                
+                <div class="card-info">
+                    <span class="card-label">Empresa:</span>
+                    <span class="card-value">{{ experiencia.nombreempresa }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Ubicación:</span>
+                    <span class="card-value">{{ experiencia.lugarempresa }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Periodo:</span>
+                    <span class="card-value">
+                        {{ experiencia.fechainiciocontrato|date:"d/m/Y" }} - 
+                        {% if experiencia.trabajo_actual %}
+                            Actualidad
+                        {% else %}
+                            {{ experiencia.fechafincontrato|date:"d/m/Y" }}
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Descripción:</span>
+                    <span class="card-value">{{ experiencia.descripcionfunciones }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Contacto:</span>
+                    <span class="card-value">{{ experiencia.nombrecontactoprincipalempresarial }} - {{ experiencia.telefonocontactoempresarial }}</span>
+                </div>
+                
+                {% if experiencia.sueldocertificado %}
+                <div class="card-info">
+                    <span class="card-label">Sueldo certificado:</span>
+                    <span class="card-value">{{ experiencia.sueldocertificado }}</span>
+                </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-briefcase fa-3x mb-3"></i>
+            <p>No hay experiencia laboral registrada.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

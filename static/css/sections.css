@@ -1,0 +1,188 @@
+/* Estilos para las secciones de Cursos y Títulos y Reconocimientos */
+
+/* Botones de navegación de sección */
+.section-nav-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.section-nav-button {
+    padding: 10px 25px;
+    border-radius: 30px;
+    background-color: rgba(0, 71, 171, 0.1);
+    color: var(--primary-color);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin: 0 10px;
+    font-weight: 500;
+}
+
+.section-nav-button:hover {
+    background-color: rgba(0, 71, 171, 0.2);
+    transform: translateY(-2px);
+}
+
+.section-nav-button.active {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 5px 15px rgba(0, 71, 171, 0.3);
+}
+
+/* Elementos de educación, cursos y reconocimientos */
+.education-item, .course-item, .recognition-item {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    transition: all 0.3s;
+}
+
+.education-item {
+    border-left: 4px solid #4285F4;
+}
+
+.course-item {
+    border-left: 4px solid #0F9D58;
+}
+
+.recognition-item {
+    border-left: 4px solid #F4B400;
+}
+
+.education-item:hover, .course-item:hover, .recognition-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px var(--shadow-color);
+}
+
+/* Encabezados */
+.education-header h4, .course-header h4, .recognition-header h4 {
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.education-header h5 {
+    color: var(--text-light);
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+/* Metadatos (fechas, horas) */
+.education-meta, .course-meta, .recognition-meta {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.hours {
+    margin-left: 15px;
+}
+
+/* Descripciones */
+.course-description, .recognition-description {
+    color: var(--text-color);
+    font-size: 0.95rem;
+    margin-bottom: 0;
+}
+
+/* Detalles expandibles */
+.education-details, .course-details, .recognition-details {
+    background-color: var(--tertiary-color);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.detail-item {
+    margin-bottom: 10px;
+}
+
+.detail-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.detail-label {
+    display: block;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+}
+
+.detail-value {
+    color: var(--text-color);
+}
+
+/* Botones de toggle */
+.btn-toggle-details {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-toggle-details:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
+/* Acciones de detalle (botones para ver documentos) */
+.detail-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Estado vacío */
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: var(--tertiary-color);
+    border-radius: 10px;
+    color: var(--text-muted);
+}
+
+.empty-state i {
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .section-nav-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .section-nav-button {
+        margin: 5px 0;
+        width: 80%;
+    }
+    
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}

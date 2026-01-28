@@ -1,0 +1,308 @@
+/**
+ * Estilos para el panel de exportación de PDF
+ */
+
+/* Panel flotante */
+.pdf-export-panel-container {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+/* Pestaña para mostrar/ocultar el panel */
+.pdf-export-tab {
+    background-color: #0047ab; /* Azul cobalto */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+    box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.2);
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 150px;
+    transition: background-color 0.3s ease;
+}
+
+.pdf-export-tab:hover {
+    background-color: #003380; /* Un azul más oscuro al pasar el mouse */
+}
+
+.pdf-export-tab i {
+    font-size: 1.2rem;
+    transform: rotate(90deg);
+}
+
+/* Panel principal */
+.pdf-export-panel {
+    position: absolute;
+    right: -300px;
+    top: 0;
+    width: 280px;
+    background-color: white;
+    border-radius: 8px 0 0 8px;
+    box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    transition: right 0.3s ease;
+}
+
+/* Cuando el panel está activo */
+.pdf-export-panel-container.active .pdf-export-panel {
+    right: 0;
+}
+
+/* Título del panel */
+.pdf-export-panel h5 {
+    color: #0047ab;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 8px;
+}
+
+/* Opciones de exportación */
+.pdf-export-option {
+    margin-bottom: 12px;
+}
+
+/* Subopciones (anidadas) */
+.pdf-export-suboptions {
+    margin-left: 20px;
+    display: none;
+    padding-top: 5px;
+}
+
+.pdf-export-suboptions.show {
+    display: block;
+}
+
+/* Estilos para los checkboxes personalizados */
+.pdf-checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    user-select: none;
+}
+
+.pdf-checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.pdf-checkbox {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 20px;
+    width: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.pdf-checkbox-container:hover input ~ .pdf-checkbox {
+    background-color: #e0e0e0;
+}
+
+.pdf-checkbox-container input:checked ~ .pdf-checkbox {
+    background-color: #0047ab;
+    border-color: #0047ab;
+}
+
+.pdf-checkbox:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.pdf-checkbox-container input:checked ~ .pdf-checkbox:after {
+    display: block;
+}
+
+.pdf-checkbox-container .pdf-checkbox:after {
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Botón de exportación */
+.pdf-export-button {
+    background-color: #0047ab;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.pdf-export-button:hover {
+    background-color: #003380;
+}
+
+.pdf-export-button i {
+    font-size: 1rem;
+}
+
+/* Overlay de carga */
+.pdf-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.pdf-loading-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.pdf-loading-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.pdf-loading-spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #0047ab;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.pdf-loading-text {
+    font-size: 1rem;
+    color: #333;
+    margin: 0;
+}
+
+/* Modo oscuro */
+[data-theme="dark"] .pdf-export-panel {
+    background-color: #333;
+    color: #f0f0f0;
+}
+
+[data-theme="dark"] .pdf-export-panel h5 {
+    color: #4e8cff;
+    border-bottom-color: #555;
+}
+
+[data-theme="dark"] .pdf-checkbox {
+    background-color: #444;
+    border-color: #666;
+}
+
+[data-theme="dark"] .pdf-checkbox-container:hover input ~ .pdf-checkbox {
+    background-color: #555;
+}
+
+[data-theme="dark"] .pdf-loading-content {
+    background-color: #333;
+    color: #f0f0f0;
+}
+
+[data-theme="dark"] .pdf-loading-text {
+    color: #f0f0f0;
+}
+
+/* Botón flotante en la barra lateral */
+.export-pdf-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    background-color: #0047ab;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.export-pdf-button:hover {
+    background-color: #003380;
+}
+
+.export-pdf-button i {
+    font-size: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pdf-export-panel-container {
+        top: auto;
+        bottom: 20px;
+        transform: none;
+    }
+    
+    .pdf-export-tab {
+        writing-mode: horizontal-tb;
+        transform: none;
+        height: auto;
+        border-radius: 8px 8px 0 0;
+        padding: 10px 15px;
+    }
+    
+    .pdf-export-tab i {
+        transform: none;
+    }
+    
+    .pdf-export-panel {
+        bottom: -100%;
+        top: auto;
+        right: auto;
+        left: 0;
+        width: 100%;
+        border-radius: 8px 8px 0 0;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    
+    .pdf-export-panel-container.active .pdf-export-panel {
+        bottom: 100%;
+        right: auto;
+    }
+}

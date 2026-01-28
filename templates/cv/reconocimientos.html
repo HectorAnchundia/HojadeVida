@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block title %}Reconocimientos{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card-item {
+        background-color: var(--card-bg);
+        border-radius: 10px;
+        border-left: 4px solid var(--primary-color);
+        margin-bottom: 20px;
+        padding: 20px;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+    }
+    
+    .card-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+    
+    .card-info {
+        margin-bottom: 15px;
+    }
+    
+    .card-label {
+        font-weight: 600;
+        margin-right: 5px;
+        color: var(--text-color);
+    }
+    
+    .card-value {
+        color: var(--text-light);
+    }
+    
+    .card-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .btn-certificate {
+        flex: 1;
+        padding: 8px 15px;
+        border-radius: 5px;
+        text-align: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .btn-view {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .btn-view:hover {
+        background-color: var(--accent-color);
+        color: white;
+    }
+    
+    .btn-download {
+        background-color: var(--secondary-color);
+        color: white;
+    }
+    
+    .btn-download:hover {
+        background-color: var(--accent-color);
+        color: white;
+    }
+    
+    .btn-disabled {
+        background-color: var(--text-muted);
+        color: white;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+    
+    .section-divider {
+        margin: 40px 0;
+        border-top: 1px solid var(--border-color);
+        position: relative;
+    }
+    
+    .section-divider::before {
+        content: attr(data-title);
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--bg-color);
+        padding: 0 20px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-color);
+    }
+    
+    .tipo-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-left: 10px;
+    }
+    
+    .tipo-general {
+        background-color: rgba(66, 133, 244, 0.2);
+        color: #4285F4;
+    }
+    
+    .tipo-laboral {
+        background-color: rgba(219, 68, 55, 0.2);
+        color: #DB4437;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="section" id="reconocimientos">
+    <h2 class="section-title">Reconocimientos</h2>
+    
+    <!-- Reconocimientos Generales -->
+    <h3 class="subsection-title">Reconocimientos Generales</h3>
+    
+    {% if reconocimientos_generales %}
+        {% for reconocimiento in reconocimientos_generales %}
+            <div class="card-item">
+                <h4 class="card-title">
+                    {{ reconocimiento.tiporeconocimiento }}
+                    <span class="tipo-badge tipo-general">General</span>
+                </h4>
+                
+                <div class="card-info">
+                    <span class="card-label">Fecha:</span>
+                    <span class="card-value">{{ reconocimiento.fechareconocimiento|date:"d/m/Y" }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Entidad:</span>
+                    <span class="card-value">{{ reconocimiento.entidadpatrocinadora }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Descripción:</span>
+                    <span class="card-value">{{ reconocimiento.descripcionreconocimiento }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Contacto:</span>
+                    <span class="card-value">{{ reconocimiento.nombrecontactoasignado }} - {{ reconocimiento.telefonocontactoasignado }}</span>
+                </div>
+                
+                {% if reconocimiento.emailcontacto %}
+                <div class="card-info">
+                    <span class="card-label">Email:</span>
+                    <span class="card-value">{{ reconocimiento.emailcontacto }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="card-actions">
+                    {% if reconocimiento.rutareconocimiento %}
+                        <a href="{{ reconocimiento.rutareconocimiento.url }}" target="_blank" class="btn-certificate btn-view">
+                            <i class="fas fa-eye"></i> Ver reconocimiento
+                        </a>
+                        <a href="{{ reconocimiento.rutareconocimiento.url }}" download class="btn-certificate btn-download">
+                            <i class="fas fa-download"></i> Descargar reconocimiento
+                        </a>
+                    {% else %}
+                        <span class="btn-certificate btn-view btn-disabled">
+                            <i class="fas fa-eye-slash"></i> No hay reconocimiento adjunto
+                        </span>
+                        <span class="btn-certificate btn-download btn-disabled">
+                            <i class="fas fa-download"></i> Descargar reconocimiento
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-award fa-3x mb-3"></i>
+            <p>No hay reconocimientos generales registrados.</p>
+        </div>
+    {% endif %}
+    
+    <div class="section-divider" data-title="Reconocimientos Laborales"></div>
+    
+    <!-- Reconocimientos Laborales -->
+    <h3 class="subsection-title">Reconocimientos Laborales</h3>
+    
+    {% if reconocimientos_laborales %}
+        {% for reconocimiento in reconocimientos_laborales %}
+            <div class="card-item">
+                <h4 class="card-title">
+                    {{ reconocimiento.tiporeconocimiento }}
+                    <span class="tipo-badge tipo-laboral">Laboral</span>
+                </h4>
+                
+                <div class="card-info">
+                    <span class="card-label">Fecha:</span>
+                    <span class="card-value">{{ reconocimiento.fechareconocimiento|date:"d/m/Y" }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Entidad:</span>
+                    <span class="card-value">{{ reconocimiento.entidadpatrocinadora }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Descripción:</span>
+                    <span class="card-value">{{ reconocimiento.descripcionreconocimiento }}</span>
+                </div>
+                
+                <div class="card-info">
+                    <span class="card-label">Contacto:</span>
+                    <span class="card-value">{{ reconocimiento.nombrecontactoasignado }} - {{ reconocimiento.telefonocontactoasignado }}</span>
+                </div>
+                
+                {% if reconocimiento.emailcontacto %}
+                <div class="card-info">
+                    <span class="card-label">Email:</span>
+                    <span class="card-value">{{ reconocimiento.emailcontacto }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="card-actions">
+                    {% if reconocimiento.rutareconocimiento %}
+                        <a href="{{ reconocimiento.rutareconocimiento.url }}" target="_blank" class="btn-certificate btn-view">
+                            <i class="fas fa-eye"></i> Ver reconocimiento
+                        </a>
+                        <a href="{{ reconocimiento.rutareconocimiento.url }}" download class="btn-certificate btn-download">
+                            <i class="fas fa-download"></i> Descargar reconocimiento
+                        </a>
+                    {% else %}
+                        <span class="btn-certificate btn-view btn-disabled">
+                            <i class="fas fa-eye-slash"></i> No hay reconocimiento adjunto
+                        </span>
+                        <span class="btn-certificate btn-download btn-disabled">
+                            <i class="fas fa-download"></i> Descargar reconocimiento
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-trophy fa-3x mb-3"></i>
+            <p>No hay reconocimientos laborales registrados.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

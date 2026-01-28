@@ -1,0 +1,146 @@
+/* Estilos específicos para el PDF generado por el servidor */
+
+@page {
+    margin: 2cm;
+    @bottom-center {
+        content: counter(page) " / " counter(pages);
+        font-family: Arial, sans-serif;
+        font-size: 9pt;
+    }
+}
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.4;
+    color: #333333;
+}
+
+.pdf-container {
+    width: 100%;
+}
+
+.pdf-header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #0047AB;
+    padding-bottom: 10px;
+}
+
+.pdf-header h1 {
+    color: #0047AB;
+    margin-bottom: 5px;
+    font-size: 24pt;
+}
+
+.pdf-perfil-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 10px;
+    display: block;
+}
+
+.pdf-section {
+    margin-bottom: 20px;
+    page-break-inside: avoid;
+}
+
+.pdf-section h2 {
+    color: #0047AB;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    font-size: 16pt;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.pdf-subsection h3 {
+    color: #1E90FF;
+    font-size: 14pt;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.pdf-item {
+    margin-bottom: 15px;
+}
+
+.pdf-item h3 {
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 13pt;
+}
+
+.pdf-item h4 {
+    margin-bottom: 3px;
+    color: #444;
+    font-size: 12pt;
+}
+
+.pdf-item p {
+    margin: 5px 0;
+}
+
+.pdf-meta {
+    font-style: italic;
+    color: #666;
+    font-size: 10pt;
+}
+
+.pdf-datos-personales {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.pdf-datos-col {
+    width: 50%;
+    padding-right: 15px;
+    box-sizing: border-box;
+}
+
+.pdf-datos-col p {
+    margin: 5px 0;
+}
+
+.pdf-footer {
+    text-align: center;
+    font-size: 9pt;
+    margin-top: 30px;
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    color: #666;
+}
+
+/* Estilos para tablas si se incluyen */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+/* Estilos para listas */
+ul, ol {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 5px;
+}

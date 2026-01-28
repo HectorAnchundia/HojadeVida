@@ -1,0 +1,289 @@
+{% extends 'base_garaje.html' %}
+{% load static %}
+
+{% block title %}Venta de Garaje{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/garaje.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Pantalla de Bienvenida para Venta de Garaje -->
+<div id="welcome-screen-garaje" class="welcome-screen garaje-welcome section">
+    <h1 class="welcome-title">Bienvenido a la Venta de Garaje</h1>
+    <p class="welcome-subtitle">Presiona el botón para ver los productos disponibles</p>
+    <div class="welcome-buttons">
+        <button class="btn btn-primary btn-lg btn-glow" id="ver-productos-btn">
+            <i class="fas fa-store me-2"></i> Ver Productos
+        </button>
+    </div>
+</div>
+
+<div id="productos-garaje" class="garaje-container" style="display: none;">
+    <h1 class="garaje-title">Venta de Garaje</h1>
+    
+    {% if productos %}
+        <div class="productos-grid">
+            {% for producto in productos %}
+                <div class="producto-card" 
+                     data-precio="{{ producto.precio }}" 
+                     data-estado="{{ producto.estado }}"
+                     data-nombre="{{ producto.nombre|lower }}"
+                     data-descripcion="{{ producto.descripcion|lower }}">
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="producto-image">
+                    {% else %}
+                        <div class="producto-image d-flex align-items-center justify-content-center bg-light">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="producto-content">
+                        <h3 class="producto-title">{{ producto.nombre }}</h3>
+                        <div class="producto-price">${{ producto.precio }}</div>
+                        <span class="producto-estado estado-{{ producto.estado }}">
+                            {{ producto.estado|title }}
+                        </span>
+                        <p class="producto-description">{{ producto.descripcion }}</p>
+                        <a href="{{ producto.link_contacto }}" target="_blank" class="producto-contact">
+                            <i class="fas fa-phone-alt me-2"></i> Contacto
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-store-slash"></i>
+            <p>No hay productos disponibles en este momento.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Asegurarse de que el botón correcto esté activo en el header
+        const headerButtons = document.querySelectorAll('.header-nav-button');
+        headerButtons.forEach(button => {
+            button.classList.remove('active');
+            if (button.getAttribute('data-target') === 'garage-sale') {
+                button.classList.add('active');
+            }
+        });
+        
+        // Manejar el botón de ver productos
+        const verProductosBtn = document.getElementById('ver-productos-btn');
+        const welcomeScreenGaraje = document.getElementById('welcome-screen-garaje');
+        const productosGaraje = document.getElementById('productos-garaje');
+        
+        if (verProductosBtn && welcomeScreenGaraje && productosGaraje) {
+            verProductosBtn.addEventListener('click', function() {
+                welcomeScreenGaraje.style.display = 'none';
+                productosGaraje.style.display = 'block';
+            });
+        }
+        
+        // Configurar el sidebar para que oculte los filtros cuando está colapsado
+        const sidebar = document.querySelector('.sidebar');
+        
+        // Expandir la sidebar cuando el mouse entra en ella
+        sidebar.addEventListener('mouseenter', function() {
+            sidebar.classList.remove('collapsed');
+        });
+        
+        // Colapsar la sidebar cuando el mouse sale de ella
+        sidebar.addEventListener('mouseleave', function() {
+            if (window.innerWidth > 991) { // Solo en pantallas grandes
+                sidebar.classList.add('collapsed');
+            }
+        });
+        
+        // Colapsar la sidebar al cargar la página en pantallas grandes
+        if (window.innerWidth > 991) {
+            sidebar.classList.add('collapsed');
+        }
+        
+        // Manejar el filtrado desde el sidebar
+        const filtrosForm = document.getElementById('filtros-sidebar-form');
+        const busquedaInput = document.getElementById('sidebar-busqueda');
+        const precioMinInput = document.getElementById('sidebar-precio-min');
+        const precioMaxInput = document.getElementById('sidebar-precio-max');
+        const estadoSelect = document.getElementById('sidebar-estado');
+        const btnBuscar = document.getElementById('btn-buscar');
+        
+        // Función para filtrar productos
+        function filtrarProductos() {
+            const busqueda = busquedaInput.value.toLowerCase().trim();
+            const precioMin = precioMinInput.value ? parseFloat(precioMinInput.value) : 0;
+            const precioMax = precioMaxInput.value ? parseFloat(precioMaxInput.value) : Infinity;
+            const estado = estadoSelect.value;
+            
+            // Filtrar productos
+            const productos = document.querySelectorAll('.producto-card');
+            let productosVisibles = 0;
+            
+            productos.forEach(producto => {
+                const precio = parseFloat(producto.dataset.precio);
+                const estadoProducto = producto.dataset.estado;
+                const nombre = producto.dataset.nombre;
+                const descripcion = producto.dataset.descripcion;
+                
+                let mostrar = true;
+                
+                // Filtrar por búsqueda
+                if (busqueda && !(nombre.includes(busqueda) || descripcion.includes(busqueda))) {
+                    mostrar = false;
+                }
+                
+                // Filtrar por precio mínimo
+                if (precio < precioMin) {
+                    mostrar = false;
+                }
+                
+                // Filtrar por precio máximo
+                if (precio > precioMax) {
+                    mostrar = false;
+                }
+                
+                // Filtrar por estado
+                if (estado && estadoProducto !== estado) {
+                    mostrar = false;
+                }
+                
+                // Mostrar u ocultar el producto
+                producto.style.display = mostrar ? 'flex' : 'none';
+                
+                if (mostrar) {
+                    productosVisibles++;
+                }
+            });
+            
+            // Mostrar mensaje si no hay productos que coincidan
+            const emptyState = document.querySelector('.empty-state');
+            const productosGrid = document.querySelector('.productos-grid');
+            
+            if (productosVisibles === 0 && productosGrid) {
+                if (!emptyState) {
+                    const nuevoEmptyState = document.createElement('div');
+                    nuevoEmptyState.className = 'empty-state';
+                    nuevoEmptyState.innerHTML = `
+                        <i class="fas fa-filter-slash"></i>
+                        <p>No se encontraron productos que coincidan con los filtros.</p>
+                    `;
+                    productosGrid.insertAdjacentElement('afterend', nuevoEmptyState);
+                } else {
+                    emptyState.style.display = 'block';
+                }
+                productosGrid.style.display = 'none';
+            } else {
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+                if (productosGrid) {
+                    productosGrid.style.display = 'grid';
+                }
+            }
+            
+            // Si estamos en la pantalla de bienvenida, cambiar a la pantalla de productos
+            if (welcomeScreenGaraje && welcomeScreenGaraje.style.display !== 'none') {
+                welcomeScreenGaraje.style.display = 'none';
+                productosGaraje.style.display = 'block';
+            }
+        }
+        
+        if (filtrosForm) {
+            // Manejar el envío del formulario
+            filtrosForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                filtrarProductos();
+            });
+            
+            // Manejar el botón de búsqueda
+            if (btnBuscar) {
+                btnBuscar.addEventListener('click', function() {
+                    filtrarProductos();
+                });
+            }
+            
+            // Manejar la búsqueda al presionar Enter
+            if (busquedaInput) {
+                busquedaInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        filtrarProductos();
+                    }
+                });
+            }
+            
+            // Manejar el botón de limpiar filtros
+            filtrosForm.addEventListener('reset', function() {
+                setTimeout(() => {
+                    // Mostrar todos los productos
+                    const productos = document.querySelectorAll('.producto-card');
+                    productos.forEach(producto => {
+                        producto.style.display = 'flex';
+                    });
+                    
+                    // Ocultar el mensaje de "no se encontraron productos"
+                    const emptyState = document.querySelector('.empty-state');
+                    const productosGrid = document.querySelector('.productos-grid');
+                    
+                    if (emptyState) {
+                        emptyState.style.display = 'none';
+                    }
+                    
+                    if (productosGrid) {
+                        productosGrid.style.display = 'grid';
+                    }
+                    
+                    // Si estamos en la pantalla de bienvenida, cambiar a la pantalla de productos
+                    if (welcomeScreenGaraje.style.display !== 'none') {
+                        welcomeScreenGaraje.style.display = 'none';
+                        productosGaraje.style.display = 'block';
+                    }
+                }, 0);
+            });
+        }
+        
+        // Manejar el cambio de tema
+        const themeToggle = document.getElementById('theme-toggle');
+        if (themeToggle) {
+            themeToggle.addEventListener('click', function() {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                
+                if (isDark) {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    this.classList.remove('active');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    this.classList.add('active');
+                }
+            });
+            
+            // Verificar el tema guardado
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.classList.add('active');
+            }
+        }
+        
+        // Manejar el botón de navegación en el header
+        const headerNavButtons = document.querySelectorAll('.header-nav-button');
+        headerNavButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                if (target === 'cv') {
+                    window.location.href = '/';
+                } else if (target === 'garage-sale') {
+                    window.location.href = '/venta-garaje/';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

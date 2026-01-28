@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoja de Vida</title>
+</head>
+<body>
+    <div class="pdf-container">
+        <!-- Encabezado -->
+        <div class="pdf-header">
+            {% if datos_personales %}
+                {% if datos_personales.varyingpic %}
+                <img src="{{ datos_personales.varyingpic.url }}" alt="Foto de perfil" class="pdf-perfil-img">
+                {% endif %}
+                <h1>{{ datos_personales.nombres }} {{ datos_personales.apellidos }}</h1>
+                <p>{{ datos_personales.ocupacion }}</p>
+            {% else %}
+                <h1>Hoja de Vida</h1>
+            {% endif %}
+        </div>
+        
+        <!-- Datos Personales -->
+        {% if options.datosPersonales and datos_personales %}
+        <div class="pdf-section">
+            <h2>Datos Personales</h2>
+            <div class="pdf-datos-personales">
+                <div class="pdf-datos-col">
+                    {% if datos_personales.email_contacto %}
+                    <p><strong>Email:</strong> {{ datos_personales.email_contacto }}</p>
+                    {% endif %}
+                    {% if datos_personales.telefono %}
+                    <p><strong>Teléfono:</strong> {{ datos_personales.telefono }}</p>
+                    {% endif %}
+                    {% if datos_personales.direccion %}
+                    <p><strong>Dirección:</strong> {{ datos_personales.direccion }}</p>
+                    {% endif %}
+                </div>
+                <div class="pdf-datos-col">
+                    {% if datos_personales.fechanacimiento %}
+                    <p><strong>Fecha de nacimiento:</strong> {{ datos_personales.fechanacimiento|date:"d/m/Y" }}</p>
+                    <p><strong>Edad:</strong> {{ datos_personales.edad }} años</p>
+                    {% endif %}
+                    {% if datos_personales.nacionalidad %}
+                    <p><strong>Nacionalidad:</strong> {{ datos_personales.nacionalidad }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% if datos_personales.descripcion %}
+            <div class="pdf-item">
+                <p>{{ datos_personales.descripcion }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- Experiencia Laboral -->
+        {% if options.experienciaLaboral %}
+        <div class="pdf-section">
+            <h2>Experiencia Laboral</h2>
+            {% if experiencias %}
+                {% for exp in experiencias %}
+                <div class="pdf-item">
+                    <h3>{{ exp.puesto }}</h3>
+                    <p><strong>{{ exp.empresa }}</strong></p>
+                    <p class="pdf-meta">{{ exp.fecha_inicio|date:"m/Y" }} - {% if exp.actual %}Actual{% else %}{{ exp.fecha_fin|date:"m/Y" }}{% endif %}</p>
+                    <p>{{ exp.descripcion }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No hay información de experiencia laboral disponible.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- Productos Académicos -->
+        {% if options.productosAcademicos %}
+        <div class="pdf-section">
+            <h2>Productos Académicos</h2>
+            {% if productos_academicos %}
+                {% for prod in productos_academicos %}
+                <div class="pdf-item">
+                    <h3>{{ prod.titulo }}</h3>
+                    <p class="pdf-meta">{{ prod.fechaproducto|date:"d/m/Y" }}</p>
+                    <p>{{ prod.descripcion }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No hay información de productos académicos disponible.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- Productos Laborales -->
+        {% if options.productosLaborales %}
+        <div class="pdf-section">
+            <h2>Productos Laborales</h2>
+            {% if productos_laborales %}
+                {% for prod in productos_laborales %}
+                <div class="pdf-item">
+                    <h3>{{ prod.titulo }}</h3>
+                    <p class="pdf-meta">{{ prod.fechaproducto|date:"d/m/Y" }}</p>
+                    <p>{{ prod.descripcion }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No hay información de productos laborales disponible.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- Estudios -->
+        {% if options.estudiosCursos and options.estudios %}
+        <div class="pdf-section">
+            <h2>Formación Académica</h2>
+            {% if estudios %}
+                {% for est in estudios %}
+                <div class="pdf-item">
+                    <h3>{{ est.titulo }}</h3>
+                    <p><strong>{{ est.institucion }}</strong></p>
+                    <p class="pdf-meta">{{ est.fecha_inicio|date:"m/Y" }} - {% if est.actual %}Actual{% else %}{{ est.fecha_fin|date:"m/Y" }}{% endif %}</p>
+                    <p>{{ est.descripcion }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No hay información de estudios disponible.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- Cursos -->
+        {% if options.estudiosCursos and options.cursos %}
+        <div class="pdf-section">
+            <h2>Cursos Realizados</h2>
+            {% if cursos %}
+                {% for curso in cursos %}
+                <div class="pdf-item">
+                    <h3>{{ curso.titulo }}</h3>
+                    <p><strong>{{ curso.institucion }}</strong></p>
+                    <p class="pdf-meta">{{ curso.fecha_inicio|date:"m/Y" }} - {% if curso.en_curso %}Actual{% else %}{{ curso.fecha_fin|date:"m/Y" }}{% endif %} - {{ curso.horas }} horas</p>
+                    <p>{{ curso.descripcion }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No hay información de cursos disponible.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- Reconocimientos -->
+        {% if options.reconocimientos %}
+        <div class="pdf-section">
+            <h2>Reconocimientos</h2>
+            
+            <!-- Reconocimientos Generales -->
+            {% if options.reconocimientosGenerales and reconocimientos_generales %}
+            <div class="pdf-subsection">
+                <h3>Reconocimientos Generales</h3>
+                {% for rec in reconocimientos_generales %}
+                <div class="pdf-item">
+                    <h4>{{ rec.titulo }}</h4>
+                    <p class="pdf-meta">{{ rec.fecha|date:"d/m/Y" }}</p>
+                    <p>{{ rec.descripcion }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!-- Reconocimientos Laborales -->
+            {% if options.reconocimientosLaborales and reconocimientos_laborales %}
+            <div class="pdf-subsection">
+                <h3>Reconocimientos Laborales</h3>
+                {% for rec in reconocimientos_laborales %}
+                <div class="pdf-item">
+                    <h4>{{ rec.titulo }}</h4>
+                    <p class="pdf-meta">{{ rec.fecha|date:"d/m/Y" }}</p>
+                    <p>{{ rec.descripcion }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            {% if not reconocimientos_generales and not reconocimientos_laborales %}
+                <p>No hay información de reconocimientos disponible.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- Pie de página -->
+        <div class="pdf-footer">
+            <p>Hoja de vida generada el {% now "d/m/Y" %}</p>
+        </div>
+    </div>
+</body>
+</html>

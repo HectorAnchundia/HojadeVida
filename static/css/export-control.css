@@ -1,0 +1,165 @@
+/* Estilos para el control de exportación a PDF */
+
+/* Estructura de capas (z-index):
+   - Sidebar: 800
+   - Header deslizable: 900
+   - Control de exportación: 1000
+   - Secciones y subsecciones: por debajo
+*/
+
+.export-trigger {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    background-color: var(--primary-color);
+    color: white;
+    width: 30px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px 0 0 5px;
+    cursor: pointer;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Por encima de todo */
+    transition: all 0.3s ease;
+}
+
+.export-trigger.active {
+    right: 320px;
+}
+
+.export-control {
+    position: fixed;
+    top: 50%;
+    right: -320px;
+    transform: translateY(-50%);
+    width: 320px;
+    background-color: var(--bg-color); /* Usar el color de fondo del tema */
+    border-radius: 5px 0 0 5px;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    z-index: 1000; /* Por encima de todo */
+    transition: all 0.3s ease;
+    max-height: 80vh;
+    overflow-y: auto;
+    /* Asegurar que el fondo sea opaco */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.export-control.active {
+    right: 0;
+}
+
+/* No desplazar el contenido, el panel debe estar por encima */
+.content {
+    position: relative;
+    z-index: 1; /* Menor que el z-index del panel de exportación */
+}
+
+.export-control h4 {
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.export-options {
+    margin-bottom: 20px;
+}
+
+.export-option {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.export-option input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.export-option label {
+    margin-bottom: 0;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+/* Estilos para opciones principales y subopciones */
+.export-parent {
+    font-weight: 600;
+    margin-top: 15px;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 10px;
+}
+
+.export-suboption {
+    margin-left: 20px;
+    font-size: 0.95em;
+}
+
+/* Estilos para checkbox desactivados */
+.export-option input[type="checkbox"]:disabled + label {
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+/* Estilos para el botón de exportar */
+#export-pdf-btn {
+    background-color: var(--primary-color);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+#export-pdf-btn:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para tema oscuro */
+[data-theme="dark"] .export-control {
+    background-color: var(--dark-bg);
+    border: 1px solid var(--dark-border);
+}
+
+[data-theme="dark"] .export-control h4 {
+    color: var(--dark-primary);
+    border-bottom-color: var(--dark-border);
+}
+
+[data-theme="dark"] .export-option label {
+    color: var(--dark-text);
+}
+
+[data-theme="dark"] .export-option input[type="checkbox"]:disabled + label {
+    color: var(--dark-text-muted);
+}
+
+[data-theme="dark"] #export-pdf-btn {
+    background-color: var(--dark-primary);
+}
+
+[data-theme="dark"] #export-pdf-btn:hover {
+    background-color: var(--dark-accent);
+}
+
+/* Estilos responsivos */
+@media (max-width: 576px) {
+    .export-trigger {
+        width: 25px;
+        height: 60px;
+    }
+    
+    .export-trigger.active {
+        right: 280px;
+    }
+    
+    .export-control {
+        width: 280px;
+    }
+}

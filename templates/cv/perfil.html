@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Perfil{% endblock %}
+
+{% block content %}
+<div class="section" id="datos-personales">
+    <h2 class="section-title">Datos Personales</h2>
+    
+    {% if datos_personales %}
+        <!-- Sobre mí -->
+        <div class="profile-section mb-4">
+            <h3 class="profile-section-title">Sobre mí</h3>
+            <div class="profile-section-content">
+                <p>{{ datos_personales.descripcionperfil }}</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Datos personales -->
+            <div class="col-md-4 mb-4">
+                <div class="profile-section">
+                    <h3 class="profile-section-title">Datos personales</h3>
+                    <div class="profile-section-content">
+                        <div class="profile-item">
+                            <span class="profile-label">Nombre:</span>
+                            <span class="profile-value">{{ datos_personales.nombres }} {{ datos_personales.apellidos }}</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">Edad:</span>
+                            <span class="profile-value">{{ datos_personales.edad }} años</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">Nacionalidad:</span>
+                            <span class="profile-value">{{ datos_personales.nacionalidad }}</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">Estado civil:</span>
+                            <span class="profile-value">{{ datos_personales.estadocivil }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ubicación -->
+            <div class="col-md-4 mb-4">
+                <div class="profile-section">
+                    <h3 class="profile-section-title">Ubicación</h3>
+                    <div class="profile-section-content">
+                        <div class="profile-item">
+                            <span class="profile-label">Dirección:</span>
+                            <span class="profile-value">{{ datos_personales.direccionhabitual }}</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">Ciudad:</span>
+                            <span class="profile-value">{{ datos_personales.lugardenacimiento }}</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">País:</span>
+                            <span class="profile-value">{{ datos_personales.nacionalidad }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Información de contacto -->
+            <div class="col-md-4 mb-4">
+                <div class="profile-section">
+                    <h3 class="profile-section-title">Información de contacto</h3>
+                    <div class="profile-section-content">
+                        <div class="profile-item">
+                            <span class="profile-label">Email:</span>
+                            <span class="profile-value">
+                                {% if datos_personales.email_contacto %}
+                                    {{ datos_personales.email_contacto }}
+                                {% else %}
+                                    {% if datos_personales.activoweb and datos_personales.activoweb|lower != "activo" and datos_personales.activoweb|lower != "no activo" %}
+                                        {{ datos_personales.activoweb }}
+                                    {% else %}
+                                        -------------
+                                    {% endif %}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">Teléfono:</span>
+                            <span class="profile-value">{{ datos_personales.telefonocelular }}</span>
+                        </div>
+                        {% if datos_personales.telefonoconvencional %}
+                        <div class="profile-item">
+                            <span class="profile-label">Teléfono convencional:</span>
+                            <span class="profile-value">{{ datos_personales.telefonoconvencional }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Funciones y competencias -->
+        <div class="profile-section mt-4">
+            <h3 class="profile-section-title">Funciones y competencias</h3>
+            <div class="profile-section-content">
+                <p>{{ datos_personales.funcionescompetencias|linebreaks }}</p>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fas fa-user-circle fa-3x mb-3"></i>
+            <p>No hay datos personales registrados.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

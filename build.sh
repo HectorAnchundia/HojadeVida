@@ -12,9 +12,9 @@ export RENDER=true
 echo "Recolectando archivos estáticos..."
 python manage.py collectstatic --no-input --settings=hojadevida.settings_render
 
-# Marcar todas las migraciones como aplicadas sin ejecutar SQL
-echo "Marcando migraciones como aplicadas..."
-python manage.py migrate --fake --settings=hojadevida.settings_render
+# Ejecutar migraciones normales (no --fake)
+echo "Ejecutando migraciones..."
+python manage.py migrate --settings=hojadevida.settings_render
 
 # Crear directorio para archivos estáticos si no existe
 mkdir -p staticfiles

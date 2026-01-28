@@ -12,13 +12,9 @@ export RENDER=true
 echo "Recolectando archivos estáticos..."
 python manage.py collectstatic --no-input --settings=hojadevida.settings_render
 
-# Ejecutar script para resetear la base de datos
-echo "Reseteando la base de datos..."
-python reset_db.py
-
-# Ejecutar migraciones desde cero
-echo "Ejecutando migraciones..."
-python manage.py migrate --settings=hojadevida.settings_render
+# Marcar todas las migraciones como aplicadas sin ejecutar SQL
+echo "Marcando migraciones como aplicadas..."
+python manage.py migrate --fake --settings=hojadevida.settings_render
 
 # Crear directorio para archivos estáticos si no existe
 mkdir -p staticfiles

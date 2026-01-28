@@ -8,9 +8,14 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 """
 
 import os
+import sys
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hojadevida.settings')
+# Determinar si estamos en Render
+if 'RENDER' in os.environ:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hojadevida.settings_render')
+else:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hojadevida.settings')
 
 application = get_wsgi_application()

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const folder = parts[parts.length - 2] || '';
         
         // Construir URL de Cloudinary
-        return `https://res.cloudinary.com/hojavida/image/upload/${folder}/${filename}`;
+        return `https://res.cloudinary.com/hojavida/image/upload/home/${filename}`;
     }
     
     // Función para manejar errores de carga de imágenes
@@ -44,11 +44,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 let fallbackImage = '/static/img/default-profile.png';
                 
                 if (this.classList.contains('profile-image')) {
-                    fallbackImage = '/static/img/default-profile.png';
+                    fallbackImage = 'https://res.cloudinary.com/hojavida/image/upload/v1769606962/perfil_ycbpd5.jpg';
                 } else if (this.classList.contains('producto-image')) {
-                    fallbackImage = '/static/img/default-product.png';
+                    fallbackImage = 'https://res.cloudinary.com/hojavida/image/upload/v1769606981/Cable_Consola_qgaqwo.png';
                 } else if (this.parentElement.classList.contains('certificate-container')) {
-                    fallbackImage = '/static/img/default-certificate.png';
+                    fallbackImage = 'https://res.cloudinary.com/hojavida/image/upload/v1769619044/Captura_de_pantalla_2026-01-28_021010.png';
                 }
                 
                 // Reemplazar con imagen por defecto si falla la carga

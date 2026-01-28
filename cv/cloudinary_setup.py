@@ -72,6 +72,7 @@ def setup_cloudinary_cors():
                 logger.warning(f"No se pudo crear el mapping: {create_mapping_error}")
         
         # Configurar opciones de transformación para hacer las imágenes públicas
+        # Corregir el error de "missing definition" en create_transformation
         try:
             cloudinary.api.update_transformation(
                 transformation="default_transform",
@@ -81,6 +82,7 @@ def setup_cloudinary_cors():
             logger.info("Transformación actualizada para permitir acceso público")
         except Exception as transform_error:
             try:
+                # Añadir el parámetro "definition" que faltaba
                 cloudinary.api.create_transformation(
                     name="default_transform",
                     transformation={"quality": "auto", "fetch_format": "auto"},

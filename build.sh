@@ -12,11 +12,15 @@ export RENDER=true
 echo "Recolectando archivos estáticos..."
 python manage.py collectstatic --no-input --settings=hojadevida.settings_render
 
-# Ejecutar migraciones normales (no --fake)
+# Ejecutar migraciones normales
 echo "Ejecutando migraciones..."
 python manage.py migrate --settings=hojadevida.settings_render
 
 # Crear directorio para archivos estáticos si no existe
 mkdir -p staticfiles
+
+# Crear superusuario (usuario administrador)
+echo "Creando usuario administrador..."
+python create_admin.py
 
 echo "Build completado con éxito!"

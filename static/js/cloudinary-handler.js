@@ -19,8 +19,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const filename = parts[parts.length - 1];
         const folder = parts[parts.length - 2] || '';
         
-        // Construir URL de Cloudinary
-        return `https://res.cloudinary.com/hojavida/image/upload/v1769619044/${filename}`;
+        // Construir URL de Cloudinary sin la parte de versión
+        return `https://res.cloudinary.com/hojavida/image/upload/${folder}/${filename}`;
+    }
+    
+    // Función para limpiar URLs de Cloudinary que pudieran tener versiones o comillas
+    function cleanCloudinaryUrl(url) {
+        if (!url || !url.includes('res.cloudinary.com')) return url;
+        
+        // Eliminar comillas que pudieran estar en la URL
+        let cleanUrl = url.replace(/"/g, '');
+        
+        // Eliminar la parte de versión (v1234567890/)
+        cleanUrl = cleanUrl.replace(/\/v\d+\//, '/');
+        
+        return cleanUrl;
     }
     
     // Función para manejar errores de carga de imágenes
@@ -29,11 +42,21 @@ document.addEventListener('DOMContentLoaded', function() {
         images.forEach(img => {
             const src = img.getAttribute('src');
             
-            // Si la URL comienza con /media/, intentar convertirla a URL de Cloudinary
-            if (src && src.startsWith('/media/')) {
-                const cloudinaryUrl = convertToCloudinaryUrl(src);
-                img.setAttribute('src', cloudinaryUrl);
-                console.log('Convertida URL local a Cloudinary:', src, '->', cloudinaryUrl);
+            if (src) {
+                // Limpiar la URL si ya es de Cloudinary
+                if (src.includes('res.cloudinary.com')) {
+                    const cleanedUrl = cleanCloudinaryUrl(src);
+                    if (cleanedUrl !== src) {
+                        img.setAttribute('src', cleanedUrl);
+                        console.log('URL de Cloudinary limpiada:', src, '->', cleanedUrl);
+                    }
+                }
+                // Si la URL comienza con /media/, intentar convertirla a URL de Cloudinary
+                else if (src.startsWith('/media/')) {
+                    const cloudinaryUrl = convertToCloudinaryUrl(src);
+                    img.setAttribute('src', cloudinaryUrl);
+                    console.log('Convertida URL local a Cloudinary:', src, '->', cloudinaryUrl);
+                }
             }
             
             // Configurar manejador de errores para todas las imágenes
@@ -44,11 +67,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 let fallbackImage = '/static/img/default-profile.png';
                 
                 if (this.classList.contains('profile-image')) {
-                    fallbackImage = 'https://res.cloudinary.com/hojavida/image/upload/v1769606962/perfil_ycbpd5.jpg';
+                    fallbackImage = '/static/img/default-profile.png';
                 } else if (this.classList.contains('producto-image')) {
-                    fallbackImage = 'https://res.cloudinary.com/hojavida/image/upload/v1769606981/Cable_Consola_qgaqwo.png';
+                    fallbackImage = '/static/img/default-product.png';
                 } else if (this.parentElement.classList.contains('certificate-container')) {
-                    fallbackImage = 'https://res.cloudinary.com/hojavida/image/upload/v1769619044/Captura_de_pantalla_2026-01-28_021010.png';
+                    fallbackImage = '/static/img/default-certificate.png';
                 }
                 
                 // Reemplazar con imagen por defecto si falla la carga
@@ -61,15 +84,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Función para manejar enlaces a archivos (certificados, títulos, etc.)
     function handleFileLinks() {
-        const fileLinks = document.querySelectorAll('a[href^="/media/"]');
+        const fileLinks = document.querySelectorAll('a[href^="/media/"], a[href*="res.cloudinary.com"]');
         fileLinks.forEach(link => {
             const href = link.getAttribute('href');
             
-            // Convertir URL local a URL de Cloudinary
-            if (href && href.startsWith('/media/')) {
-                const cloudinaryUrl = convertToCloudinaryUrl(href);
-                link.setAttribute('href', cloudinaryUrl);
-                console.log('Convertido enlace local a Cloudinary:', href, '->', cloudinaryUrl);
+            if (href) {
+                // Limpiar la URL si ya es de Cloudinary
+                if (href.includes('res.cloudinary.com')) {
+                    const cleanedUrl = cleanCloudinaryUrl(href);
+                    if (cleanedUrl !== href) {
+                        link.setAttribute('href', cleanedUrl);
+                        console.log('URL de enlace Cloudinary limpiada:', href, '->', cleanedUrl);
+                    }
+                }
+                // Convertir URL local a URL de Cloudinary
+                else if (href.startsWith('/media/')) {
+                    const cloudinaryUrl = convertToCloudinaryUrl(href);
+                    link.setAttribute('href', cloudinaryUrl);
+                    console.log('Convertido enlace local a Cloudinary:', href, '->', cloudinaryUrl);
+                }
             }
         });
     }
@@ -84,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.nodeName === 'IMG' || e.target.querySelector('img')) {
             handleImages();
         }
-        if (e.target.nodeName === 'A' || e.target.querySelector('a[href^="/media/"]')) {
+        if (e.target.nodeName === 'A' || e.target.querySelector('a[href^="/media/"], a[href*="res.cloudinary.com"]')) {
             handleFileLinks();
         }
     });

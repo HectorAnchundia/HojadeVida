@@ -24,7 +24,11 @@ class DatosPersonalesAdmin(admin.ModelAdmin):
     readonly_fields = ('edad',)
     fieldsets = (
         ('Información Básica', {
-            'fields': (('nombres', 'apellidos'), 'ocupacion', 'numerocedula', 'varyingpic', 'esfotoperfil', 'descripcionperfil')
+            'fields': (('nombres', 'apellidos'), 'ocupacion', 'numerocedula')
+        }),
+        ('Imagen de Perfil', {
+            'fields': ('varyingpic', 'varyingpic_url', 'esfotoperfil', 'descripcionperfil'),
+            'description': 'Puedes subir una imagen o proporcionar una URL directa (no ambas)'
         }),
         ('Datos Personales', {
             'fields': ('fechanacimiento', 'edad', 'nacionalidad', 'lugardenacimiento', 'sexo', 'estadocivil')
@@ -106,7 +110,7 @@ class ProductosAcademicosAdmin(admin.ModelAdmin):
 
 @admin.register(ProductosLaborales)
 class ProductosLaboralesAdmin(admin.ModelAdmin):
-    list_display = ('nombreproducto', 'fechaproducto', 'estadoproducto', 'public')
+    list_display = ('nombreproducto', 'fechaproducto', 'estadoproducto', 'public', 'ver_imagen')
     search_fields = ('nombreproducto', 'lugarproducto')
     list_filter = ('estadoproducto', 'public')
     date_hierarchy = 'fechaproducto'
@@ -115,7 +119,14 @@ class ProductosLaboralesAdmin(admin.ModelAdmin):
             'fields': ('nombreproducto', 'fechaproducto', 'lugarproducto', 'estadoproducto')
         }),
         ('Detalles', {
-            'fields': ('descripcion', 'valordelibro', 'imagen', 'link_proyecto')
+            'fields': ('descripcion', 'valordelibro')
+        }),
+        ('Imagen', {
+            'fields': ('imagen', 'imagen_url'),
+            'description': 'Puedes subir una imagen o proporcionar una URL directa (no ambas)'
+        }),
+        ('Enlaces', {
+            'fields': ('link_proyecto',)
         }),
         ('Configuración', {
             'fields': ('public', 'idproductolaboral', 'idperfilcomparteasociativo')
@@ -126,6 +137,19 @@ class ProductosLaboralesAdmin(admin.ModelAdmin):
         if obj: # Edición
             return ('idproductolaboral',)
         return ()
+    
+    def ver_imagen(self, obj):
+        url = None
+        if obj.imagen_url:
+            url = obj.imagen_url
+        elif obj.imagen:
+            url = obj.imagen.url
+            
+        if url:
+            return format_html('<img src="{}" width="50" height="50" style="object-fit: cover; border-radius: 5px;" />', url)
+        return "Sin imagen"
+    
+    ver_imagen.short_description = "Imagen"
 
 @admin.register(CursosRealizado)
 class CursosRealizadoAdmin(admin.ModelAdmin):
@@ -142,7 +166,8 @@ class CursosRealizadoAdmin(admin.ModelAdmin):
                       'telefonocontactoasignado', 'emailempresapatrocinadora')
         }),
         ('Certificado', {
-            'fields': ('notacertificado', 'rutacertificado')
+            'fields': ('notacertificado', 'rutacertificado', 'certificado_url'),
+            'description': 'Puedes subir un certificado o proporcionar una URL directa (no ambos)'
         }),
         ('Configuración', {
             'fields': ('public', 'idcursorealizado', 'idperfilcomparteasociativo')
@@ -155,8 +180,14 @@ class CursosRealizadoAdmin(admin.ModelAdmin):
         return ()
     
     def ver_certificado(self, obj):
-        if obj.rutacertificado:
-            return format_html('<a href="{}" target="_blank">Ver certificado</a>', obj.rutacertificado.url)
+        url = None
+        if obj.certificado_url:
+            url = obj.certificado_url
+        elif obj.rutacertificado:
+            url = obj.rutacertificado.url
+            
+        if url:
+            return format_html('<a href="{}" target="_blank">Ver certificado</a>', url)
         return "No disponible"
     
     def mostrar_fecha_fin(self, obj):
@@ -185,7 +216,8 @@ class ReconocimientosAdmin(admin.ModelAdmin):
                       'telefonocontactoasignado', 'emailcontacto')
         }),
         ('Certificado', {
-            'fields': ('notacertificado', 'rutareconocimiento')
+            'fields': ('notacertificado', 'rutareconocimiento', 'reconocimiento_url'),
+            'description': 'Puedes subir un reconocimiento o proporcionar una URL directa (no ambos)'
         }),
         ('Configuración', {
             'fields': ('public', 'idreconocimiento', 'idperfilcomparteasociativo')
@@ -198,8 +230,14 @@ class ReconocimientosAdmin(admin.ModelAdmin):
         return ()
     
     def ver_reconocimiento(self, obj):
-        if obj.rutareconocimiento:
-            return format_html('<a href="{}" target="_blank">Ver reconocimiento</a>', obj.rutareconocimiento.url)
+        url = None
+        if obj.reconocimiento_url:
+            url = obj.reconocimiento_url
+        elif obj.rutareconocimiento:
+            url = obj.rutareconocimiento.url
+            
+        if url:
+            return format_html('<a href="{}" target="_blank">Ver reconocimiento</a>', url)
         return "No disponible"
     
     ver_reconocimiento.short_description = "Reconocimiento"
@@ -221,7 +259,8 @@ class EducacionAdmin(admin.ModelAdmin):
             'fields': ('descripcion', 'area_conocimiento', 'nivel_titulo', 'subarea_conocimiento')
         }),
         ('Título', {
-            'fields': ('rutatitulo',)
+            'fields': ('rutatitulo', 'titulo_url'),
+            'description': 'Puedes subir un título o proporcionar una URL directa (no ambos)'
         }),
         ('Configuración', {
             'fields': ('public', 'ideducacion', 'idperfilcomparteasociativo')
@@ -234,8 +273,14 @@ class EducacionAdmin(admin.ModelAdmin):
         return ()
     
     def ver_titulo(self, obj):
-        if obj.rutatitulo:
-            return format_html('<a href="{}" target="_blank">Ver título</a>', obj.rutatitulo.url)
+        url = None
+        if obj.titulo_url:
+            url = obj.titulo_url
+        elif obj.rutatitulo:
+            url = obj.rutatitulo.url
+            
+        if url:
+            return format_html('<a href="{}" target="_blank">Ver título</a>', url)
         return "No disponible"
     
     def mostrar_fecha_fin(self, obj):
@@ -259,8 +304,12 @@ class ProductoGarajeAdmin(admin.ModelAdmin):
         ('Información del Producto', {
             'fields': ('nombre', 'descripcion', 'precio', 'estado')
         }),
-        ('Imagen y Contacto', {
-            'fields': ('imagen', 'link_contacto')
+        ('Imagen', {
+            'fields': ('imagen', 'imagen_url'),
+            'description': 'Puedes subir una imagen o proporcionar una URL directa (no ambas)'
+        }),
+        ('Contacto', {
+            'fields': ('link_contacto',)
         }),
         ('Configuración', {
             'fields': ('activo',)
@@ -268,8 +317,14 @@ class ProductoGarajeAdmin(admin.ModelAdmin):
     )
     
     def ver_imagen(self, obj):
-        if obj.imagen:
-            return format_html('<img src="{}" width="50" height="50" style="object-fit: cover; border-radius: 5px;" />', obj.imagen.url)
+        url = None
+        if obj.imagen_url:
+            url = obj.imagen_url
+        elif obj.imagen:
+            url = obj.imagen.url
+            
+        if url:
+            return format_html('<img src="{}" width="50" height="50" style="object-fit: cover; border-radius: 5px;" />', url)
         return "Sin imagen"
     
     def ver_contacto(self, obj):

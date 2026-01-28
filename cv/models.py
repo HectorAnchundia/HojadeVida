@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, URLValidator
 from django.core.exceptions import ValidationError
 from datetime import date
 
@@ -10,6 +10,11 @@ class DatosPersonales(models.Model):
     idperfilcomparteasociativo = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='perfiles_asociados')
     descripcionperfil = models.CharField(max_length=255)
     varyingpic = models.ImageField(upload_to='perfiles/', null=True, blank=True)
+    varyingpic_url = models.URLField(
+        verbose_name="URL directa de imagen de perfil", 
+        null=True, blank=True,
+        help_text="Si prefieres, puedes ingresar directamente la URL de una imagen (ej: Cloudinary)"
+    )
     esfotoperfil = models.BooleanField(default=False)
     apellidos = models.CharField(max_length=100)
     nombres = models.CharField(max_length=100)
@@ -34,12 +39,25 @@ class DatosPersonales(models.Model):
         # Validar que la fecha de nacimiento no sea en el futuro
         if self.fechanacimiento and self.fechanacimiento > date.today():
             raise ValidationError({'fechanacimiento': 'La fecha de nacimiento no puede ser en el futuro.'})
+        
+        # Validar que no se proporcionen ambos campos: archivo y URL
+        if self.varyingpic and self.varyingpic_url:
+            raise ValidationError({'varyingpic_url': 'No puedes proporcionar tanto un archivo como una URL. Elige uno de los dos.'})
     
     @property
     def edad(self):
         """Calcula la edad automáticamente basada en la fecha de nacimiento"""
         today = date.today()
         return today.year - self.fechanacimiento.year - ((today.month, today.day) < (self.fechanacimiento.month, self.fechanacimiento.day))
+    
+    @property
+    def imagen_perfil(self):
+        """Devuelve la URL de la imagen de perfil, ya sea del archivo o de la URL directa"""
+        if self.varyingpic_url:
+            return self.varyingpic_url
+        elif self.varyingpic:
+            return self.varyingpic.url
+        return None
 
 class ProductosLaborales(models.Model):
     """Modelo para almacenar productos laborales"""
@@ -52,8 +70,13 @@ class ProductosLaborales(models.Model):
     estadoproducto = models.CharField(max_length=50)
     descripcion = models.TextField()
     valordelibro = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    # Nuevos campos para productos laborales
+    # Campos para imágenes
     imagen = models.ImageField(upload_to='productos_laborales/', null=True, blank=True, help_text="Imagen opcional del producto laboral")
+    imagen_url = models.URLField(
+        verbose_name="URL directa de imagen", 
+        null=True, blank=True,
+        help_text="Si prefieres, puedes ingresar directamente la URL de una imagen (ej: Cloudinary)"
+    )
     link_proyecto = models.URLField(null=True, blank=True, help_text="Enlace opcional al proyecto o demostración")
     
     def __str__(self):
@@ -63,6 +86,19 @@ class ProductosLaborales(models.Model):
         # Validar que la fecha no sea en el futuro
         if self.fechaproducto and self.fechaproducto > date.today():
             raise ValidationError({'fechaproducto': 'La fecha del producto no puede ser en el futuro.'})
+        
+        # Validar que no se proporcionen ambos campos: archivo y URL
+        if self.imagen and self.imagen_url:
+            raise ValidationError({'imagen_url': 'No puedes proporcionar tanto un archivo como una URL. Elige uno de los dos.'})
+    
+    @property
+    def imagen_producto(self):
+        """Devuelve la URL de la imagen, ya sea del archivo o de la URL directa"""
+        if self.imagen_url:
+            return self.imagen_url
+        elif self.imagen:
+            return self.imagen.url
+        return None
 
 class ProductosAcademicos(models.Model):
     """Modelo para almacenar productos académicos"""
@@ -92,7 +128,13 @@ class CursosRealizado(models.Model):
     telefonocontactoasignado = models.CharField(max_length=15)
     emailempresapatrocinadora = models.EmailField()
     notacertificado = models.CharField(max_length=50, null=True, blank=True)
+    # Campos para certificados
     rutacertificado = models.FileField(upload_to='certificados/', null=True, blank=True)
+    certificado_url = models.URLField(
+        verbose_name="URL directa del certificado", 
+        null=True, blank=True,
+        help_text="Si prefieres, puedes ingresar directamente la URL del certificado (ej: Cloudinary)"
+    )
     
     def __str__(self):
         return self.nombrecurso
@@ -108,6 +150,19 @@ class CursosRealizado(models.Model):
             raise ValidationError({'fechainicio': 'La fecha de inicio no puede ser en el futuro.'})
         if self.fechafin and not self.en_curso and self.fechafin > today:
             raise ValidationError({'fechafin': 'La fecha de fin no puede ser en el futuro.'})
+        
+        # Validar que no se proporcionen ambos campos: archivo y URL
+        if self.rutacertificado and self.certificado_url:
+            raise ValidationError({'certificado_url': 'No puedes proporcionar tanto un archivo como una URL. Elige uno de los dos.'})
+    
+    @property
+    def certificado(self):
+        """Devuelve la URL del certificado, ya sea del archivo o de la URL directa"""
+        if self.certificado_url:
+            return self.certificado_url
+        elif self.rutacertificado:
+            return self.rutacertificado.url
+        return None
 
 class ExperienciaLaboral(models.Model):
     """Modelo para almacenar experiencia laboral"""
@@ -178,7 +233,13 @@ class Reconocimientos(models.Model):
     telefonocontactoasignado = models.CharField(max_length=15)
     emailcontacto = models.EmailField(null=True, blank=True)
     notacertificado = models.CharField(max_length=50, null=True, blank=True)
+    # Campos para reconocimientos
     rutareconocimiento = models.FileField(upload_to='reconocimientos/', null=True, blank=True)
+    reconocimiento_url = models.URLField(
+        verbose_name="URL directa del reconocimiento", 
+        null=True, blank=True,
+        help_text="Si prefieres, puedes ingresar directamente la URL del reconocimiento (ej: Cloudinary)"
+    )
     
     def __str__(self):
         return self.tiporeconocimiento
@@ -195,6 +256,19 @@ class Reconocimientos(models.Model):
             fecha_minima = date(perfil.fechanacimiento.year + 10, perfil.fechanacimiento.month, perfil.fechanacimiento.day)
             if self.fechareconocimiento < fecha_minima:
                 raise ValidationError({'fechareconocimiento': 'La fecha del reconocimiento no puede ser anterior a 10 años después de la fecha de nacimiento.'})
+        
+        # Validar que no se proporcionen ambos campos: archivo y URL
+        if self.rutareconocimiento and self.reconocimiento_url:
+            raise ValidationError({'reconocimiento_url': 'No puedes proporcionar tanto un archivo como una URL. Elige uno de los dos.'})
+    
+    @property
+    def reconocimiento(self):
+        """Devuelve la URL del reconocimiento, ya sea del archivo o de la URL directa"""
+        if self.reconocimiento_url:
+            return self.reconocimiento_url
+        elif self.rutareconocimiento:
+            return self.rutareconocimiento.url
+        return None
 
 class Educacion(models.Model):
     """Modelo para almacenar educación y formación académica"""
@@ -212,7 +286,13 @@ class Educacion(models.Model):
     area_conocimiento = models.CharField(max_length=100, null=True, blank=True)
     nivel_titulo = models.CharField(max_length=50, null=True, blank=True)
     subarea_conocimiento = models.CharField(max_length=100, null=True, blank=True)
+    # Campos para títulos
     rutatitulo = models.FileField(upload_to='titulos/', null=True, blank=True)
+    titulo_url = models.URLField(
+        verbose_name="URL directa del título", 
+        null=True, blank=True,
+        help_text="Si prefieres, puedes ingresar directamente la URL del título (ej: Cloudinary)"
+    )
     
     def __str__(self):
         return f"{self.titulo} - {self.institucion}"
@@ -236,6 +316,19 @@ class Educacion(models.Model):
         # Si no está en curso, debe tener fecha de fin
         if not self.en_curso and not self.fecha_fin:
             raise ValidationError({'fecha_fin': 'Si la educación no está en curso, debe tener fecha de fin.'})
+        
+        # Validar que no se proporcionen ambos campos: archivo y URL
+        if self.rutatitulo and self.titulo_url:
+            raise ValidationError({'titulo_url': 'No puedes proporcionar tanto un archivo como una URL. Elige uno de los dos.'})
+    
+    @property
+    def titulo_documento(self):
+        """Devuelve la URL del título, ya sea del archivo o de la URL directa"""
+        if self.titulo_url:
+            return self.titulo_url
+        elif self.rutatitulo:
+            return self.rutatitulo.url
+        return None
 
 class ProductoGaraje(models.Model):
     """Modelo para almacenar productos de la venta de garaje"""
@@ -247,7 +340,13 @@ class ProductoGaraje(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
+    # Campos para imágenes
     imagen = models.ImageField(upload_to='productos_garaje/', null=True, blank=True)
+    imagen_url = models.URLField(
+        verbose_name="URL directa de imagen", 
+        null=True, blank=True,
+        help_text="Si prefieres, puedes ingresar directamente la URL de una imagen (ej: Cloudinary)"
+    )
     estado = models.CharField(max_length=10, choices=ESTADO_CHOICES, default='bueno')
     link_contacto = models.URLField(help_text="URL para contactar al vendedor")
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
@@ -255,6 +354,20 @@ class ProductoGaraje(models.Model):
     
     def __str__(self):
         return self.nombre
+    
+    def clean(self):
+        # Validar que no se proporcionen ambos campos: archivo y URL
+        if self.imagen and self.imagen_url:
+            raise ValidationError({'imagen_url': 'No puedes proporcionar tanto un archivo como una URL. Elige uno de los dos.'})
+    
+    @property
+    def imagen_producto(self):
+        """Devuelve la URL de la imagen, ya sea del archivo o de la URL directa"""
+        if self.imagen_url:
+            return self.imagen_url
+        elif self.imagen:
+            return self.imagen.url
+        return None
     
     class Meta:
         ordering = ['-fecha_publicacion']

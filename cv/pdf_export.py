@@ -16,7 +16,7 @@ from urllib.parse import urljoin
 import requests
 from io import BytesIO
 from django.urls import reverse
-from cv.models import DatosPersonales, ExperienciaLaboral, Educacion, Curso, Reconocimiento, Producto
+from cv.models import DatosPersonales, ExperienciaLaboral, Educacion, CursosRealizado, Reconocimientos, ProductosLaborales
 
 def prepare_cloudinary_images(html_content):
     """
@@ -65,11 +65,11 @@ def generate_pdf(request):
         
         # Obtener datos del modelo
         datos_personales = DatosPersonales.objects.first()
-        experiencias = ExperienciaLaboral.objects.all().order_by('-fecha_inicio')
+        experiencias = ExperienciaLaboral.objects.all().order_by('-fechainiciocontrato')
         educacion = Educacion.objects.all().order_by('-fecha_inicio')
-        cursos = Curso.objects.all().order_by('-fecha')
-        reconocimientos = Reconocimiento.objects.all().order_by('-fecha')
-        productos = Producto.objects.all().order_by('-fecha')
+        cursos = CursosRealizado.objects.all().order_by('-fechainicio')
+        reconocimientos = Reconocimientos.objects.all().order_by('-fechareconocimiento')
+        productos = ProductosLaborales.objects.all().order_by('-fechaproducto')
         
         # Filtrar según las secciones seleccionadas
         context = {

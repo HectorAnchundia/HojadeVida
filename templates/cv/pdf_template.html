@@ -82,6 +82,7 @@
             border-radius: 50%;
             object-fit: cover;
             margin: 0 auto 15px;
+            display: block;
         }
         .profile-name {
             font-size: 24pt;
@@ -140,7 +141,8 @@
         <!-- Perfil -->
         <div class="profile-section">
             {% if datos_personales %}
-                {% if datos_personales.imagen_perfil and options.incluirImagenes %}
+                <!-- IMPORTANTE: Siempre mostrar la imagen de perfil sin importar la opción de incluirImagenes -->
+                {% if datos_personales.imagen_perfil %}
                     <img src="{{ datos_personales.imagen_perfil }}" alt="Foto de perfil" class="profile-image">
                 {% endif %}
                 <h1 class="profile-name">{{ datos_personales.nombres }} {{ datos_personales.apellidos }}</h1>
@@ -156,7 +158,7 @@
         
         <h3 class="subsection-title">Sobre mí</h3>
         <div class="card-item">
-            <p>{{ datos_personales.descripcion }}</p>
+            <p>{{ datos_personales.descripcionperfil }}</p>
         </div>
         
         <div class="datos-grid">
@@ -191,22 +193,22 @@
             <div>
                 <h3 class="subsection-title">Ubicación</h3>
                 <div class="card-item">
-                    {% if datos_personales.direccion %}
+                    {% if datos_personales.direccionhabitual %}
                     <div class="card-info">
                         <span class="card-label">Dirección:</span>
-                        <span>{{ datos_personales.direccion }}</span>
+                        <span>{{ datos_personales.direccionhabitual }}</span>
                     </div>
                     {% endif %}
-                    {% if datos_personales.ciudad %}
+                    {% if datos_personales.lugardenacimiento %}
                     <div class="card-info">
                         <span class="card-label">Ciudad:</span>
-                        <span>{{ datos_personales.ciudad }}</span>
+                        <span>{{ datos_personales.lugardenacimiento }}</span>
                     </div>
                     {% endif %}
-                    {% if datos_personales.pais %}
+                    {% if datos_personales.nacionalidad %}
                     <div class="card-info">
                         <span class="card-label">País:</span>
-                        <span>{{ datos_personales.pais }}</span>
+                        <span>{{ datos_personales.nacionalidad }}</span>
                     </div>
                     {% endif %}
                 </div>
@@ -218,11 +220,22 @@
                         <span class="card-label">Email:</span>
                         <span>{{ datos_personales.email_contacto }}</span>
                     </div>
+                    {% elif datos_personales.activoweb %}
+                    <div class="card-info">
+                        <span class="card-label">Email:</span>
+                        <span>{{ datos_personales.activoweb }}</span>
+                    </div>
                     {% endif %}
-                    {% if datos_personales.telefono %}
+                    {% if datos_personales.telefonocelular %}
                     <div class="card-info">
                         <span class="card-label">Teléfono:</span>
-                        <span>{{ datos_personales.telefono }}</span>
+                        <span>{{ datos_personales.telefonocelular }}</span>
+                    </div>
+                    {% endif %}
+                    {% if datos_personales.telefonoconvencional %}
+                    <div class="card-info">
+                        <span class="card-label">Teléfono convencional:</span>
+                        <span>{{ datos_personales.telefonoconvencional }}</span>
                     </div>
                     {% endif %}
                 </div>
@@ -231,7 +244,7 @@
         
         <h3 class="subsection-title">Funciones y competencias</h3>
         <div class="card-item">
-            <p>{{ datos_personales.competencias }}</p>
+            <p>{{ datos_personales.funcionescompetencias }}</p>
         </div>
         {% endif %}
         
@@ -241,23 +254,23 @@
         {% for exp in experiencias %}
         <div class="card-item">
             <h3 class="card-title">
-                {{ exp.puestocontrato }}
-                {% if exp.actual %}
+                {{ exp.cargodesempenado }}
+                {% if exp.trabajo_actual %}
                 <span class="badge en-curso">Actualidad</span>
                 {% endif %}
             </h3>
             <div class="card-info">
                 <span class="card-label">Empresa:</span>
-                <span>{{ exp.empresa }}</span>
+                <span>{{ exp.nombreempresa }}</span>
             </div>
             <div class="card-info">
                 <span class="card-label">Ubicación:</span>
-                <span>{{ exp.ubicacion }}</span>
+                <span>{{ exp.lugarempresa }}</span>
             </div>
             <div class="card-info">
                 <span class="card-label">Periodo:</span>
                 <span>{{ exp.fechainiciocontrato|date:"d/m/Y" }} - 
-                {% if exp.actual %}
+                {% if exp.trabajo_actual %}
                     Actualidad
                 {% else %}
                     {{ exp.fechafincontrato|date:"d/m/Y" }}
@@ -266,11 +279,11 @@
             </div>
             <div class="card-info">
                 <span class="card-label">Descripción:</span>
-                <span>{{ exp.descripcioncontrato }}</span>
+                <span>{{ exp.descripcionfunciones }}</span>
             </div>
             <div class="card-info">
                 <span class="card-label">Contacto:</span>
-                <span>{{ exp.nombrecontactoasignado }} - {{ exp.telefonocontactoasignado }}</span>
+                <span>{{ exp.nombrecontactoprincipalempresarial }} - {{ exp.telefonocontactoempresarial }}</span>
             </div>
         </div>
         {% endfor %}
@@ -281,10 +294,10 @@
         <h2 class="section-title">Productos Académicos</h2>
         {% for prod in productos_academicos %}
         <div class="card-item">
-            <h3 class="card-title">{{ prod.titulo }}</h3>
+            <h3 class="card-title">{{ prod.nombrerecurso }}</h3>
             <div class="card-info">
                 <span class="card-label">Clasificación:</span>
-                <span>{{ prod.clasificacion }}</span>
+                <span>{{ prod.clasificador }}</span>
             </div>
             <div class="card-info">
                 <span class="card-label">Descripción:</span>
@@ -299,9 +312,9 @@
         <h2 class="section-title">Productos Laborales</h2>
         {% for prod in productos_laborales %}
         <div class="card-item">
-            <h3 class="card-title">{{ prod.titulo }}</h3>
-            {% if options.incluirImagenes and prod.imagen %}
-            <img src="{{ prod.imagen }}" alt="{{ prod.titulo }}" style="max-width: 100%; max-height: 300px; margin: 10px 0;">
+            <h3 class="card-title">{{ prod.nombreproducto }}</h3>
+            {% if options.incluirImagenes and prod.imagen_producto %}
+            <img src="{{ prod.imagen_producto }}" alt="{{ prod.nombreproducto }}" style="max-width: 100%; max-height: 300px; margin: 10px 0;">
             {% endif %}
             <div class="card-info">
                 <span class="card-label">Fecha:</span>
@@ -309,11 +322,11 @@
             </div>
             <div class="card-info">
                 <span class="card-label">Estado:</span>
-                <span>{{ prod.estado }}</span>
+                <span>{{ prod.estadoproducto }}</span>
             </div>
             <div class="card-info">
                 <span class="card-label">Lugar:</span>
-                <span>{{ prod.lugar }}</span>
+                <span>{{ prod.lugarproducto }}</span>
             </div>
             <div class="card-info">
                 <span class="card-label">Descripción:</span>

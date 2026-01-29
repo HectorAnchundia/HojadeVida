@@ -17,7 +17,7 @@ import requests
 from io import BytesIO
 import logging
 from django.urls import reverse
-from cv.models import DatosPersonales, ExperienciaLaboral, Educacion, CursosRealizado, Reconocimientos, ProductosLaborales
+from cv.models import DatosPersonales, ExperienciaLaboral, Educacion, CursosRealizado, Reconocimientos, ProductosLaborales, ProductosAcademicos
 
 logger = logging.getLogger(__name__)
 

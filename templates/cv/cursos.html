@@ -129,7 +129,7 @@
     
     {% if educacion %}
         {% for edu in educacion %}
-            <div class="card-item">
+            <div class="card-item education-item">
                 <h4 class="card-title">
                     {{ edu.titulo }}
                     {% if edu.en_curso %}
@@ -176,11 +176,11 @@
                 {% endif %}
                 
                 <div class="card-actions">
-                    {% if edu.rutatitulo %}
-                        <a href="{{ edu.rutatitulo.url }}" target="_blank" class="btn-certificate btn-view">
+                    {% if edu.titulo_documento %}
+                        <a href="{{ edu.titulo_documento }}" target="_blank" class="btn-certificate btn-view">
                             <i class="fas fa-eye"></i> Ver título
                         </a>
-                        <a href="{{ edu.rutatitulo.url }}" download class="btn-certificate btn-download">
+                        <a href="{{ edu.titulo_documento }}" download class="btn-certificate btn-download">
                             <i class="fas fa-download"></i> Descargar título
                         </a>
                     {% else %}
@@ -208,7 +208,7 @@
     
     {% if cursos %}
         {% for curso in cursos %}
-            <div class="card-item">
+            <div class="card-item certificate-container">
                 <h4 class="card-title">
                     {{ curso.nombrecurso }}
                     {% if curso.en_curso %}
@@ -249,11 +249,11 @@
                 </div>
                 
                 <div class="card-actions">
-                    {% if curso.rutacertificado %}
-                        <a href="{{ curso.rutacertificado.url }}" target="_blank" class="btn-certificate btn-view">
+                    {% if curso.certificado %}
+                        <a href="{{ curso.certificado }}" target="_blank" class="btn-certificate btn-view">
                             <i class="fas fa-eye"></i> Ver certificado
                         </a>
-                        <a href="{{ curso.rutacertificado.url }}" download class="btn-certificate btn-download">
+                        <a href="{{ curso.certificado }}" download class="btn-certificate btn-download">
                             <i class="fas fa-download"></i> Descargar certificado
                         </a>
                     {% else %}

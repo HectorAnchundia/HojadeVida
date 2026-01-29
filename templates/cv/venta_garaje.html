@@ -30,8 +30,8 @@
                      data-estado="{{ producto.estado }}"
                      data-nombre="{{ producto.nombre|lower }}"
                      data-descripcion="{{ producto.descripcion|lower }}">
-                    {% if producto.imagen %}
-                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="producto-image">
+                    {% if producto.imagen_producto %}
+                        <img src="{{ producto.imagen_producto }}" alt="{{ producto.nombre }}" class="producto-image">
                     {% else %}
                         <div class="producto-image d-flex align-items-center justify-content-center bg-light">
                             <i class="fas fa-image fa-3x text-muted"></i>

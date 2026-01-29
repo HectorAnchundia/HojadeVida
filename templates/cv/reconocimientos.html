@@ -137,7 +137,7 @@
     
     {% if reconocimientos_generales %}
         {% for reconocimiento in reconocimientos_generales %}
-            <div class="card-item">
+            <div class="card-item recognition-item">
                 <h4 class="card-title">
                     {{ reconocimiento.tiporeconocimiento }}
                     <span class="tipo-badge tipo-general">General</span>
@@ -171,11 +171,11 @@
                 {% endif %}
                 
                 <div class="card-actions">
-                    {% if reconocimiento.rutareconocimiento %}
-                        <a href="{{ reconocimiento.rutareconocimiento.url }}" target="_blank" class="btn-certificate btn-view">
+                    {% if reconocimiento.documento_reconocimiento %}
+                        <a href="{{ reconocimiento.documento_reconocimiento }}" target="_blank" class="btn-certificate btn-view">
                             <i class="fas fa-eye"></i> Ver reconocimiento
                         </a>
-                        <a href="{{ reconocimiento.rutareconocimiento.url }}" download class="btn-certificate btn-download">
+                        <a href="{{ reconocimiento.documento_reconocimiento }}" download class="btn-certificate btn-download">
                             <i class="fas fa-download"></i> Descargar reconocimiento
                         </a>
                     {% else %}
@@ -203,7 +203,7 @@
     
     {% if reconocimientos_laborales %}
         {% for reconocimiento in reconocimientos_laborales %}
-            <div class="card-item">
+            <div class="card-item recognition-item">
                 <h4 class="card-title">
                     {{ reconocimiento.tiporeconocimiento }}
                     <span class="tipo-badge tipo-laboral">Laboral</span>
@@ -237,11 +237,11 @@
                 {% endif %}
                 
                 <div class="card-actions">
-                    {% if reconocimiento.rutareconocimiento %}
-                        <a href="{{ reconocimiento.rutareconocimiento.url }}" target="_blank" class="btn-certificate btn-view">
+                    {% if reconocimiento.documento_reconocimiento %}
+                        <a href="{{ reconocimiento.documento_reconocimiento }}" target="_blank" class="btn-certificate btn-view">
                             <i class="fas fa-eye"></i> Ver reconocimiento
                         </a>
-                        <a href="{{ reconocimiento.rutareconocimiento.url }}" download class="btn-certificate btn-download">
+                        <a href="{{ reconocimiento.documento_reconocimiento }}" download class="btn-certificate btn-download">
                             <i class="fas fa-download"></i> Descargar reconocimiento
                         </a>
                     {% else %}

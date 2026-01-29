@@ -401,9 +401,9 @@
                     <div class="card-item">
                         <h4 class="card-title">{{ producto.nombreproducto }}</h4>
                         
-                        {% if producto.imagen %}
+                        {% if producto.imagen_producto %}
                         <div class="producto-image-container">
-                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombreproducto }}" class="producto-image">
+                            <img src="{{ producto.imagen_producto }}" alt="{{ producto.nombreproducto }}" class="producto-image">
                         </div>
                         {% endif %}
                         
@@ -472,7 +472,7 @@
     <div class="subsection-content" id="estudios-content">
         {% if educacion %}
             {% for edu in educacion %}
-                <div class="card-item">
+                <div class="card-item education-item">
                     <h4 class="card-title">
                         {{ edu.titulo }}
                         {% if edu.en_curso %}
@@ -519,11 +519,11 @@
                     {% endif %}
                     
                     <div class="card-actions">
-                        {% if edu.rutatitulo %}
-                            <a href="{{ edu.rutatitulo.url }}" target="_blank" class="btn-certificate btn-view">
+                        {% if edu.titulo_documento %}
+                            <a href="{{ edu.titulo_documento }}" target="_blank" class="btn-certificate btn-view">
                                 <i class="fas fa-eye"></i> Ver título
                             </a>
-                            <a href="{{ edu.rutatitulo.url }}" download class="btn-certificate btn-download">
+                            <a href="{{ edu.titulo_documento }}" download class="btn-certificate btn-download">
                                 <i class="fas fa-download"></i> Descargar título
                             </a>
                         {% else %}
@@ -554,7 +554,7 @@
     <div class="subsection-content" id="cursos-content" style="display: none;">
         {% if cursos %}
             {% for curso in cursos %}
-                <div class="card-item">
+                <div class="card-item certificate-container">
                     <h4 class="card-title">
                         {{ curso.nombrecurso }}
                         {% if curso.en_curso %}
@@ -595,11 +595,11 @@
                     </div>
                     
                     <div class="card-actions">
-                        {% if curso.rutacertificado %}
-                            <a href="{{ curso.rutacertificado.url }}" target="_blank" class="btn-certificate btn-view">
+                        {% if curso.certificado %}
+                            <a href="{{ curso.certificado }}" target="_blank" class="btn-certificate btn-view">
                                 <i class="fas fa-eye"></i> Ver certificado
                             </a>
-                            <a href="{{ curso.rutacertificado.url }}" download class="btn-certificate btn-download">
+                            <a href="{{ curso.certificado }}" download class="btn-certificate btn-download">
                                 <i class="fas fa-download"></i> Descargar certificado
                             </a>
                         {% else %}
@@ -640,7 +640,7 @@
     <div class="subsection-content" id="generales-content">
         {% if reconocimientos_generales %}
             {% for recon in reconocimientos_generales %}
-                <div class="card-item">
+                <div class="card-item recognition-item">
                     <h4 class="card-title">
                         {{ recon.tiporeconocimiento }}
                         <span class="badge-status badge-general">General</span>
@@ -674,11 +674,11 @@
                     {% endif %}
                     
                     <div class="card-actions">
-                        {% if recon.rutareconocimiento %}
-                            <a href="{{ recon.rutareconocimiento.url }}" target="_blank" class="btn-certificate btn-view">
+                        {% if recon.documento_reconocimiento %}
+                            <a href="{{ recon.documento_reconocimiento }}" target="_blank" class="btn-certificate btn-view">
                                 <i class="fas fa-eye"></i> Ver reconocimiento
                             </a>
-                            <a href="{{ recon.rutareconocimiento.url }}" download class="btn-certificate btn-download">
+                            <a href="{{ recon.documento_reconocimiento }}" download class="btn-certificate btn-download">
                                 <i class="fas fa-download"></i> Descargar reconocimiento
                             </a>
                         {% else %}
@@ -709,7 +709,7 @@
     <div class="subsection-content" id="laborales-content" style="display: none;">
         {% if reconocimientos_laborales %}
             {% for recon in reconocimientos_laborales %}
-                <div class="card-item">
+                <div class="card-item recognition-item">
                     <h4 class="card-title">
                         {{ recon.tiporeconocimiento }}
                         <span class="badge-status badge-labor">Laboral</span>
@@ -743,11 +743,11 @@
                     {% endif %}
                     
                     <div class="card-actions">
-                        {% if recon.rutareconocimiento %}
-                            <a href="{{ recon.rutareconocimiento.url }}" target="_blank" class="btn-certificate btn-view">
+                        {% if recon.documento_reconocimiento %}
+                            <a href="{{ recon.documento_reconocimiento }}" target="_blank" class="btn-certificate btn-view">
                                 <i class="fas fa-eye"></i> Ver reconocimiento
                             </a>
-                            <a href="{{ recon.rutareconocimiento.url }}" download class="btn-certificate btn-download">
+                            <a href="{{ recon.documento_reconocimiento }}" download class="btn-certificate btn-download">
                                 <i class="fas fa-download"></i> Descargar reconocimiento
                             </a>
                         {% else %}

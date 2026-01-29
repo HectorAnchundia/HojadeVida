@@ -180,7 +180,7 @@
                         <a href="{{ edu.titulo_documento }}" target="_blank" class="btn-certificate btn-view">
                             <i class="fas fa-eye"></i> Ver título
                         </a>
-                        <a href="{{ edu.titulo_documento }}" download class="btn-certificate btn-download">
+                        <a href="{{ edu.titulo_documento }}" class="btn-certificate btn-download" onclick="event.preventDefault(); downloadFile('{{ edu.titulo_documento }}', '{{ edu.titulo|slugify }}_titulo.pdf')">
                             <i class="fas fa-download"></i> Descargar título
                         </a>
                     {% else %}
@@ -253,7 +253,7 @@
                         <a href="{{ curso.certificado }}" target="_blank" class="btn-certificate btn-view">
                             <i class="fas fa-eye"></i> Ver certificado
                         </a>
-                        <a href="{{ curso.certificado }}" download class="btn-certificate btn-download">
+                        <a href="{{ curso.certificado }}" class="btn-certificate btn-download" onclick="event.preventDefault(); downloadFile('{{ curso.certificado }}', '{{ curso.nombrecurso|slugify }}_certificado.pdf')">
                             <i class="fas fa-download"></i> Descargar certificado
                         </a>
                     {% else %}
@@ -274,4 +274,57 @@
         </div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Función para descargar archivos desde Cloudinary
+    function downloadFile(url, fileName) {
+        // Mostrar indicador de carga
+        const loadingOverlay = document.createElement('div');
+        loadingOverlay.style.position = 'fixed';
+        loadingOverlay.style.top = '0';
+        loadingOverlay.style.left = '0';
+        loadingOverlay.style.width = '100%';
+        loadingOverlay.style.height = '100%';
+        loadingOverlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+        loadingOverlay.style.display = 'flex';
+        loadingOverlay.style.alignItems = 'center';
+        loadingOverlay.style.justifyContent = 'center';
+        loadingOverlay.style.zIndex = '9999';
+        
+        const loadingContent = document.createElement('div');
+        loadingContent.style.backgroundColor = '#fff';
+        loadingContent.style.padding = '20px';
+        loadingContent.style.borderRadius = '5px';
+        loadingContent.style.textAlign = 'center';
+        loadingContent.innerHTML = '<p>Descargando archivo...</p>';
+        
+        loadingOverlay.appendChild(loadingContent);
+        document.body.appendChild(loadingOverlay);
+        
+        // Realizar la solicitud para obtener el archivo
+        fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+                // Crear un enlace para descargar el archivo
+                const downloadLink = document.createElement('a');
+                downloadLink.href = URL.createObjectURL(blob);
+                downloadLink.download = fileName;
+                downloadLink.style.display = 'none';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                
+                // Eliminar el indicador de carga
+                document.body.removeChild(loadingOverlay);
+            })
+            .catch(error => {
+                console.error('Error al descargar el archivo:', error);
+                // Eliminar el indicador de carga y mostrar mensaje de error
+                document.body.removeChild(loadingOverlay);
+                alert('Error al descargar el archivo. Por favor, inténtelo de nuevo.');
+            });
+    }
+</script>
 {% endblock %}

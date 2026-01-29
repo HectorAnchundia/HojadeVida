@@ -4,190 +4,451 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hoja de Vida</title>
+    <style>
+        @page {
+            size: letter portrait;
+            margin: 2cm;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background-color: #f0f4f8;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #0047AB;
+            border-bottom: 2px solid #0047AB;
+            padding-bottom: 5px;
+            margin-top: 30px;
+            font-size: 18pt;
+        }
+        .subsection-title {
+            color: #0066CC;
+            font-size: 14pt;
+            margin-top: 20px;
+        }
+        .card-item {
+            border-left: 3px solid #0066CC;
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            color: #0066CC;
+            font-size: 14pt;
+            margin-bottom: 5px;
+        }
+        .card-info {
+            margin-bottom: 8px;
+        }
+        .card-label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #0066CC;
+            color: white;
+            border-radius: 12px;
+            font-size: 9pt;
+            margin-left: 8px;
+        }
+        .en-curso {
+            background-color: #28a745;
+        }
+        .tipo-general {
+            background-color: #4285F4;
+        }
+        .tipo-laboral {
+            background-color: #DB4437;
+        }
+        .datos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .profile-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 15px;
+        }
+        .profile-name {
+            font-size: 24pt;
+            color: #0047AB;
+            margin-bottom: 5px;
+        }
+        .profile-title {
+            font-size: 14pt;
+            color: #666;
+            margin-top: 0;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 10pt;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="pdf-container">
-        <!-- Encabezado -->
-        <div class="pdf-header">
+    <div class="container">
+        <!-- Perfil -->
+        <div class="profile-section">
             {% if datos_personales %}
-                {% if datos_personales.varyingpic %}
-                <img src="{{ datos_personales.varyingpic.url }}" alt="Foto de perfil" class="pdf-perfil-img">
+                {% if datos_personales.imagen_perfil and options.incluirImagenes %}
+                    <img src="{{ datos_personales.imagen_perfil }}" alt="Foto de perfil" class="profile-image">
                 {% endif %}
-                <h1>{{ datos_personales.nombres }} {{ datos_personales.apellidos }}</h1>
-                <p>{{ datos_personales.ocupacion }}</p>
+                <h1 class="profile-name">{{ datos_personales.nombres }} {{ datos_personales.apellidos }}</h1>
+                <p class="profile-title">{{ datos_personales.ocupacion }}</p>
             {% else %}
-                <h1>Hoja de Vida</h1>
+                <h1 class="profile-name">Hoja de Vida</h1>
             {% endif %}
         </div>
         
         <!-- Datos Personales -->
         {% if options.datosPersonales and datos_personales %}
-        <div class="pdf-section">
-            <h2>Datos Personales</h2>
-            <div class="pdf-datos-personales">
-                <div class="pdf-datos-col">
-                    {% if datos_personales.email_contacto %}
-                    <p><strong>Email:</strong> {{ datos_personales.email_contacto }}</p>
-                    {% endif %}
-                    {% if datos_personales.telefono %}
-                    <p><strong>Teléfono:</strong> {{ datos_personales.telefono }}</p>
-                    {% endif %}
-                    {% if datos_personales.direccion %}
-                    <p><strong>Dirección:</strong> {{ datos_personales.direccion }}</p>
-                    {% endif %}
-                </div>
-                <div class="pdf-datos-col">
+        <h2 class="section-title">Datos Personales</h2>
+        
+        <h3 class="subsection-title">Sobre mí</h3>
+        <div class="card-item">
+            <p>{{ datos_personales.descripcion }}</p>
+        </div>
+        
+        <div class="datos-grid">
+            <div>
+                <h3 class="subsection-title">Datos personales</h3>
+                <div class="card-item">
+                    <div class="card-info">
+                        <span class="card-label">Nombre:</span>
+                        <span>{{ datos_personales.nombres }} {{ datos_personales.apellidos }}</span>
+                    </div>
                     {% if datos_personales.fechanacimiento %}
-                    <p><strong>Fecha de nacimiento:</strong> {{ datos_personales.fechanacimiento|date:"d/m/Y" }}</p>
-                    <p><strong>Edad:</strong> {{ datos_personales.edad }} años</p>
+                    <div class="card-info">
+                        <span class="card-label">Edad:</span>
+                        <span>{{ datos_personales.edad }} años</span>
+                    </div>
                     {% endif %}
                     {% if datos_personales.nacionalidad %}
-                    <p><strong>Nacionalidad:</strong> {{ datos_personales.nacionalidad }}</p>
+                    <div class="card-info">
+                        <span class="card-label">Nacionalidad:</span>
+                        <span>{{ datos_personales.nacionalidad }}</span>
+                    </div>
+                    {% endif %}
+                    {% if datos_personales.estadocivil %}
+                    <div class="card-info">
+                        <span class="card-label">Estado civil:</span>
+                        <span>{{ datos_personales.estadocivil }}</span>
+                    </div>
                     {% endif %}
                 </div>
             </div>
-            {% if datos_personales.descripcion %}
-            <div class="pdf-item">
-                <p>{{ datos_personales.descripcion }}</p>
+            
+            <div>
+                <h3 class="subsection-title">Ubicación</h3>
+                <div class="card-item">
+                    {% if datos_personales.direccion %}
+                    <div class="card-info">
+                        <span class="card-label">Dirección:</span>
+                        <span>{{ datos_personales.direccion }}</span>
+                    </div>
+                    {% endif %}
+                    {% if datos_personales.ciudad %}
+                    <div class="card-info">
+                        <span class="card-label">Ciudad:</span>
+                        <span>{{ datos_personales.ciudad }}</span>
+                    </div>
+                    {% endif %}
+                    {% if datos_personales.pais %}
+                    <div class="card-info">
+                        <span class="card-label">País:</span>
+                        <span>{{ datos_personales.pais }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <h3 class="subsection-title">Información de contacto</h3>
+                <div class="card-item">
+                    {% if datos_personales.email_contacto %}
+                    <div class="card-info">
+                        <span class="card-label">Email:</span>
+                        <span>{{ datos_personales.email_contacto }}</span>
+                    </div>
+                    {% endif %}
+                    {% if datos_personales.telefono %}
+                    <div class="card-info">
+                        <span class="card-label">Teléfono:</span>
+                        <span>{{ datos_personales.telefono }}</span>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
-            {% endif %}
+        </div>
+        
+        <h3 class="subsection-title">Funciones y competencias</h3>
+        <div class="card-item">
+            <p>{{ datos_personales.competencias }}</p>
         </div>
         {% endif %}
         
         <!-- Experiencia Laboral -->
-        {% if options.experienciaLaboral %}
-        <div class="pdf-section">
-            <h2>Experiencia Laboral</h2>
-            {% if experiencias %}
-                {% for exp in experiencias %}
-                <div class="pdf-item">
-                    <h3>{{ exp.puesto }}</h3>
-                    <p><strong>{{ exp.empresa }}</strong></p>
-                    <p class="pdf-meta">{{ exp.fecha_inicio|date:"m/Y" }} - {% if exp.actual %}Actual{% else %}{{ exp.fecha_fin|date:"m/Y" }}{% endif %}</p>
-                    <p>{{ exp.descripcion }}</p>
-                </div>
-                {% endfor %}
-            {% else %}
-                <p>No hay información de experiencia laboral disponible.</p>
-            {% endif %}
+        {% if options.experienciaLaboral and experiencias %}
+        <h2 class="section-title">Experiencia Laboral</h2>
+        {% for exp in experiencias %}
+        <div class="card-item">
+            <h3 class="card-title">
+                {{ exp.puestocontrato }}
+                {% if exp.actual %}
+                <span class="badge en-curso">Actualidad</span>
+                {% endif %}
+            </h3>
+            <div class="card-info">
+                <span class="card-label">Empresa:</span>
+                <span>{{ exp.empresa }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Ubicación:</span>
+                <span>{{ exp.ubicacion }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Periodo:</span>
+                <span>{{ exp.fechainiciocontrato|date:"d/m/Y" }} - 
+                {% if exp.actual %}
+                    Actualidad
+                {% else %}
+                    {{ exp.fechafincontrato|date:"d/m/Y" }}
+                {% endif %}
+                </span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Descripción:</span>
+                <span>{{ exp.descripcioncontrato }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Contacto:</span>
+                <span>{{ exp.nombrecontactoasignado }} - {{ exp.telefonocontactoasignado }}</span>
+            </div>
         </div>
+        {% endfor %}
         {% endif %}
         
         <!-- Productos Académicos -->
-        {% if options.productosAcademicos %}
-        <div class="pdf-section">
-            <h2>Productos Académicos</h2>
-            {% if productos_academicos %}
-                {% for prod in productos_academicos %}
-                <div class="pdf-item">
-                    <h3>{{ prod.titulo }}</h3>
-                    <p class="pdf-meta">{{ prod.fechaproducto|date:"d/m/Y" }}</p>
-                    <p>{{ prod.descripcion }}</p>
-                </div>
-                {% endfor %}
-            {% else %}
-                <p>No hay información de productos académicos disponible.</p>
-            {% endif %}
+        {% if options.productosAcademicos and productos_academicos %}
+        <h2 class="section-title">Productos Académicos</h2>
+        {% for prod in productos_academicos %}
+        <div class="card-item">
+            <h3 class="card-title">{{ prod.titulo }}</h3>
+            <div class="card-info">
+                <span class="card-label">Clasificación:</span>
+                <span>{{ prod.clasificacion }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Descripción:</span>
+                <span>{{ prod.descripcion }}</span>
+            </div>
         </div>
+        {% endfor %}
         {% endif %}
         
         <!-- Productos Laborales -->
-        {% if options.productosLaborales %}
-        <div class="pdf-section">
-            <h2>Productos Laborales</h2>
-            {% if productos_laborales %}
-                {% for prod in productos_laborales %}
-                <div class="pdf-item">
-                    <h3>{{ prod.titulo }}</h3>
-                    <p class="pdf-meta">{{ prod.fechaproducto|date:"d/m/Y" }}</p>
-                    <p>{{ prod.descripcion }}</p>
-                </div>
-                {% endfor %}
-            {% else %}
-                <p>No hay información de productos laborales disponible.</p>
+        {% if options.productosLaborales and productos_laborales %}
+        <h2 class="section-title">Productos Laborales</h2>
+        {% for prod in productos_laborales %}
+        <div class="card-item">
+            <h3 class="card-title">{{ prod.titulo }}</h3>
+            {% if options.incluirImagenes and prod.imagen %}
+            <img src="{{ prod.imagen }}" alt="{{ prod.titulo }}" style="max-width: 100%; max-height: 300px; margin: 10px 0;">
             {% endif %}
+            <div class="card-info">
+                <span class="card-label">Fecha:</span>
+                <span>{{ prod.fechaproducto|date:"d/m/Y" }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Estado:</span>
+                <span>{{ prod.estado }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Lugar:</span>
+                <span>{{ prod.lugar }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Descripción:</span>
+                <span>{{ prod.descripcion }}</span>
+            </div>
         </div>
+        {% endfor %}
         {% endif %}
         
-        <!-- Estudios -->
-        {% if options.estudiosCursos and options.estudios %}
-        <div class="pdf-section">
-            <h2>Formación Académica</h2>
-            {% if estudios %}
-                {% for est in estudios %}
-                <div class="pdf-item">
-                    <h3>{{ est.titulo }}</h3>
-                    <p><strong>{{ est.institucion }}</strong></p>
-                    <p class="pdf-meta">{{ est.fecha_inicio|date:"m/Y" }} - {% if est.actual %}Actual{% else %}{{ est.fecha_fin|date:"m/Y" }}{% endif %}</p>
-                    <p>{{ est.descripcion }}</p>
-                </div>
-                {% endfor %}
-            {% else %}
-                <p>No hay información de estudios disponible.</p>
+        <!-- Educación -->
+        {% if options.estudiosCursos %}
+        <h2 class="section-title">Cursos y Títulos</h2>
+        
+        {% if options.educacion and educacion %}
+        <h3 class="subsection-title">Estudios Realizados</h3>
+        {% for edu in educacion %}
+        <div class="card-item">
+            <h3 class="card-title">
+                {{ edu.titulo }}
+                {% if edu.en_curso %}
+                <span class="badge en-curso">En curso</span>
+                {% endif %}
+            </h3>
+            <div class="card-info">
+                <span class="card-label">Institución:</span>
+                <span>{{ edu.institucion }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Periodo:</span>
+                <span>
+                    {{ edu.fecha_inicio|date:"d/m/Y" }} - 
+                    {% if edu.en_curso %}
+                        Actualidad
+                    {% else %}
+                        {{ edu.fecha_fin|date:"d/m/Y" }}
+                    {% endif %}
+                </span>
+            </div>
+            {% if edu.nivel_titulo %}
+            <div class="card-info">
+                <span class="card-label">Nivel:</span>
+                <span>{{ edu.nivel_titulo }}</span>
+            </div>
+            {% endif %}
+            {% if edu.area_conocimiento %}
+            <div class="card-info">
+                <span class="card-label">Área:</span>
+                <span>{{ edu.area_conocimiento }}</span>
+            </div>
+            {% endif %}
+            {% if edu.descripcion %}
+            <div class="card-info">
+                <span class="card-label">Descripción:</span>
+                <span>{{ edu.descripcion }}</span>
+            </div>
             {% endif %}
         </div>
+        {% endfor %}
         {% endif %}
         
-        <!-- Cursos -->
-        {% if options.estudiosCursos and options.cursos %}
-        <div class="pdf-section">
-            <h2>Cursos Realizados</h2>
-            {% if cursos %}
-                {% for curso in cursos %}
-                <div class="pdf-item">
-                    <h3>{{ curso.titulo }}</h3>
-                    <p><strong>{{ curso.institucion }}</strong></p>
-                    <p class="pdf-meta">{{ curso.fecha_inicio|date:"m/Y" }} - {% if curso.en_curso %}Actual{% else %}{{ curso.fecha_fin|date:"m/Y" }}{% endif %} - {{ curso.horas }} horas</p>
-                    <p>{{ curso.descripcion }}</p>
-                </div>
-                {% endfor %}
-            {% else %}
-                <p>No hay información de cursos disponible.</p>
-            {% endif %}
+        {% if options.cursos and cursos %}
+        <h3 class="subsection-title">Cursos Realizados</h3>
+        {% for curso in cursos %}
+        <div class="card-item">
+            <h3 class="card-title">
+                {{ curso.nombrecurso }}
+                {% if curso.en_curso %}
+                <span class="badge en-curso">En curso</span>
+                {% endif %}
+            </h3>
+            <div class="card-info">
+                <span class="card-label">Entidad:</span>
+                <span>{{ curso.entidadpatrocinadora }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Periodo:</span>
+                <span>
+                    {{ curso.fechainicio|date:"d/m/Y" }} - 
+                    {% if curso.en_curso %}
+                        Actualidad
+                    {% else %}
+                        {{ curso.fechafin|date:"d/m/Y" }}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Total horas:</span>
+                <span>{{ curso.totalhoras }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Descripción:</span>
+                <span>{{ curso.descripcioncurso }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Contacto:</span>
+                <span>{{ curso.nombrereconocimientoasignado }} - {{ curso.telefonocontactoasignado }}</span>
+            </div>
         </div>
+        {% endfor %}
+        {% endif %}
         {% endif %}
         
         <!-- Reconocimientos -->
         {% if options.reconocimientos %}
-        <div class="pdf-section">
-            <h2>Reconocimientos</h2>
-            
-            <!-- Reconocimientos Generales -->
-            {% if options.reconocimientosGenerales and reconocimientos_generales %}
-            <div class="pdf-subsection">
-                <h3>Reconocimientos Generales</h3>
-                {% for rec in reconocimientos_generales %}
-                <div class="pdf-item">
-                    <h4>{{ rec.titulo }}</h4>
-                    <p class="pdf-meta">{{ rec.fecha|date:"d/m/Y" }}</p>
-                    <p>{{ rec.descripcion }}</p>
-                </div>
-                {% endfor %}
+        <h2 class="section-title">Logros y Reconocimientos</h2>
+        
+        <!-- Reconocimientos Generales -->
+        {% if options.reconocimientosGenerales and reconocimientos_generales %}
+        <h3 class="subsection-title">Reconocimientos Generales</h3>
+        {% for rec in reconocimientos_generales %}
+        <div class="card-item">
+            <h3 class="card-title">
+                {{ rec.tiporeconocimiento }}
+                <span class="badge tipo-general">General</span>
+            </h3>
+            <div class="card-info">
+                <span class="card-label">Fecha:</span>
+                <span>{{ rec.fechareconocimiento|date:"d/m/Y" }}</span>
             </div>
-            {% endif %}
-            
-            <!-- Reconocimientos Laborales -->
-            {% if options.reconocimientosLaborales and reconocimientos_laborales %}
-            <div class="pdf-subsection">
-                <h3>Reconocimientos Laborales</h3>
-                {% for rec in reconocimientos_laborales %}
-                <div class="pdf-item">
-                    <h4>{{ rec.titulo }}</h4>
-                    <p class="pdf-meta">{{ rec.fecha|date:"d/m/Y" }}</p>
-                    <p>{{ rec.descripcion }}</p>
-                </div>
-                {% endfor %}
+            <div class="card-info">
+                <span class="card-label">Entidad:</span>
+                <span>{{ rec.entidadpatrocinadora }}</span>
             </div>
-            {% endif %}
-            
-            {% if not reconocimientos_generales and not reconocimientos_laborales %}
-                <p>No hay información de reconocimientos disponible.</p>
-            {% endif %}
+            <div class="card-info">
+                <span class="card-label">Descripción:</span>
+                <span>{{ rec.descripcionreconocimiento }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Contacto:</span>
+                <span>{{ rec.nombrecontactoasignado }} - {{ rec.telefonocontactoasignado }}</span>
+            </div>
         </div>
+        {% endfor %}
+        {% endif %}
+        
+        <!-- Reconocimientos Laborales -->
+        {% if options.reconocimientosLaborales and reconocimientos_laborales %}
+        <h3 class="subsection-title">Reconocimientos Laborales</h3>
+        {% for rec in reconocimientos_laborales %}
+        <div class="card-item">
+            <h3 class="card-title">
+                {{ rec.tiporeconocimiento }}
+                <span class="badge tipo-laboral">Laboral</span>
+            </h3>
+            <div class="card-info">
+                <span class="card-label">Fecha:</span>
+                <span>{{ rec.fechareconocimiento|date:"d/m/Y" }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Entidad:</span>
+                <span>{{ rec.entidadpatrocinadora }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Descripción:</span>
+                <span>{{ rec.descripcionreconocimiento }}</span>
+            </div>
+            <div class="card-info">
+                <span class="card-label">Contacto:</span>
+                <span>{{ rec.nombrecontactoasignado }} - {{ rec.telefonocontactoasignado }}</span>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
         {% endif %}
         
         <!-- Pie de página -->
-        <div class="pdf-footer">
+        <div class="footer">
             <p>Hoja de vida generada el {% now "d/m/Y" %}</p>
         </div>
     </div>

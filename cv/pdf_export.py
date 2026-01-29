@@ -173,18 +173,34 @@ def generate_pdf(request):
                 cursos = CursosRealizado.objects.filter(public=True).order_by('-fechainicio')
         
         # Filtrar reconocimientos según las opciones
-        reconocimientos = []
+        reconocimientos_generales = []
+        reconocimientos_laborales = []
         if include_recognition:
-            if include_general_recognition and include_work_recognition:
-                reconocimientos = Reconocimientos.objects.filter(public=True).order_by('-fechareconocimiento')
-            elif include_general_recognition:
-                reconocimientos = Reconocimientos.objects.filter(public=True, tipo='general').order_by('-fechareconocimiento')
-            elif include_work_recognition:
-                reconocimientos = Reconocimientos.objects.filter(public=True, tipo='laboral').order_by('-fechareconocimiento')
+            if include_general_recognition:
+                reconocimientos_generales = Reconocimientos.objects.filter(public=True, tipo='general').order_by('-fechareconocimiento')
+            if include_work_recognition:
+                reconocimientos_laborales = Reconocimientos.objects.filter(public=True, tipo='laboral').order_by('-fechareconocimiento')
         
         # Productos académicos y laborales
         productos_academicos = [] if not include_academic else ProductosAcademicos.objects.filter(public=True)
         productos_laborales = [] if not include_products else ProductosLaborales.objects.filter(public=True).order_by('-fechaproducto')
+        
+        # Preparar opciones para la plantilla
+        options = {
+            'datosPersonales': include_personal,
+            'experienciaLaboral': include_experience,
+            'productosAcademicos': include_academic,
+            'productosLaborales': include_products,
+            'educacion': include_studies,
+            'cursos': include_courses,
+            'estudiosCursos': include_education,
+            'reconocimientos': include_recognition,
+            'reconocimientosGenerales': include_general_recognition,
+            'reconocimientosLaborales': include_work_recognition,
+            'incluirDocumentosEducacion': include_education_docs,
+            'incluirDocumentosReconocimientos': include_recognition_docs,
+            'incluirImagenes': include_all_images
+        }
         
         # Preparar contexto para la plantilla
         context = {
@@ -192,12 +208,12 @@ def generate_pdf(request):
             'experiencias': experiencias,
             'educacion': educacion,
             'cursos': cursos,
-            'reconocimientos': reconocimientos,
+            'reconocimientos_generales': reconocimientos_generales,
+            'reconocimientos_laborales': reconocimientos_laborales,
             'productos_academicos': productos_academicos,
             'productos_laborales': productos_laborales,
+            'options': options,
             'include_images': include_all_images,
-            'include_education_docs': include_education_docs,
-            'include_recognition_docs': include_recognition_docs,
         }
         
         # Renderizar la plantilla HTML
@@ -220,20 +236,84 @@ def generate_pdf(request):
             body {
                 font-family: 'Roboto', sans-serif;
                 line-height: 1.5;
+                color: #333;
+                background-color: white;
             }
             h1, h2, h3, h4, h5 {
                 font-family: 'Roboto', sans-serif;
                 color: #0047AB;
+                margin-top: 20px;
+                margin-bottom: 10px;
             }
-            .section {
+            h1 {
+                font-size: 24pt;
+                text-align: center;
                 margin-bottom: 20px;
-                page-break-inside: avoid;
             }
-            .profile-image {
+            h2 {
+                font-size: 18pt;
+                border-bottom: 2px solid #0047AB;
+                padding-bottom: 5px;
+                margin-top: 30px;
+            }
+            h3 {
+                font-size: 14pt;
+                color: #0066CC;
+            }
+            h4 {
+                font-size: 12pt;
+                color: #0066CC;
+            }
+            .pdf-container {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            .pdf-header {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+            .pdf-perfil-img {
                 width: 150px;
                 height: 150px;
                 border-radius: 50%;
                 object-fit: cover;
+                margin: 0 auto 15px;
+                display: block;
+            }
+            .pdf-section {
+                margin-bottom: 25px;
+                page-break-inside: avoid;
+            }
+            .pdf-item {
+                margin-bottom: 20px;
+                padding-left: 15px;
+                border-left: 3px solid #0066CC;
+            }
+            .pdf-meta {
+                color: #666;
+                font-style: italic;
+                margin: 5px 0;
+            }
+            .pdf-datos-personales {
+                display: flex;
+                flex-wrap: wrap;
+            }
+            .pdf-datos-col {
+                flex: 1;
+                min-width: 250px;
+                margin-bottom: 15px;
+            }
+            .pdf-subsection {
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+            .pdf-footer {
+                margin-top: 40px;
+                text-align: center;
+                font-size: 10pt;
+                color: #666;
+                border-top: 1px solid #ddd;
+                padding-top: 10px;
             }
             .document-container {
                 margin: 20px 0;
@@ -253,6 +333,24 @@ def generate_pdf(request):
             }
             .anexos-section {
                 page-break-before: always;
+            }
+            p {
+                margin: 5px 0;
+            }
+            strong {
+                font-weight: 600;
+            }
+            .badge {
+                display: inline-block;
+                padding: 3px 8px;
+                background-color: #0066CC;
+                color: white;
+                border-radius: 12px;
+                font-size: 9pt;
+                margin-left: 8px;
+            }
+            .en-curso {
+                background-color: #28a745;
             }
             """)
         

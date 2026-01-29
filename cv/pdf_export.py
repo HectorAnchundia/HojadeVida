@@ -51,7 +51,7 @@ def prepare_cloudinary_images(html_content):
         src = img.get('src', '')
         
         # Si es una URL de Cloudinary
-        if 'res.cloudinary.com' in src:
+        if 'res.cloudinary.com' in src or 'cloudinary.com' in src:
             try:
                 # Limpiar la URL (eliminar versión)
                 clean_src = re.sub(r'/v\d+/', '/', src)
@@ -109,16 +109,10 @@ def collect_documents(educacion, cursos, reconocimientos_generales, reconocimien
     if include_recognition_docs:
         # Documentos de reconocimientos generales
         for rec in reconocimientos_generales:
-            # Intentar diferentes nombres de campo posibles para el documento
-            documento = None
-            for field_name in ['documento_reconocimiento', 'documento', 'certificado', 'archivo']:
-                if hasattr(rec, field_name) and getattr(rec, field_name):
-                    documento = getattr(rec, field_name)
-                    break
-            
-            if documento:
+            # Usar la propiedad reconocimiento que devuelve la URL correcta
+            if hasattr(rec, 'reconocimiento') and rec.reconocimiento:
                 documentos.append({
-                    'url': documento,
+                    'url': rec.reconocimiento,
                     'nombre': f"Reconocimiento General: {rec.tiporeconocimiento}",
                     'tipo': 'reconocimiento',
                     'seccion': 'reconocimientos_generales'
@@ -126,16 +120,10 @@ def collect_documents(educacion, cursos, reconocimientos_generales, reconocimien
         
         # Documentos de reconocimientos laborales
         for rec in reconocimientos_laborales:
-            # Intentar diferentes nombres de campo posibles para el documento
-            documento = None
-            for field_name in ['documento_reconocimiento', 'documento', 'certificado', 'archivo']:
-                if hasattr(rec, field_name) and getattr(rec, field_name):
-                    documento = getattr(rec, field_name)
-                    break
-            
-            if documento:
+            # Usar la propiedad reconocimiento que devuelve la URL correcta
+            if hasattr(rec, 'reconocimiento') and rec.reconocimiento:
                 documentos.append({
-                    'url': documento,
+                    'url': rec.reconocimiento,
                     'nombre': f"Reconocimiento Laboral: {rec.tiporeconocimiento}",
                     'tipo': 'reconocimiento',
                     'seccion': 'reconocimientos_laborales'
@@ -399,6 +387,14 @@ def generate_pdf(request):
                 font-style: italic;
                 color: #666;
                 margin-top: 5px;
+            }
+            .profile-image {
+                width: 150px;
+                height: 150px;
+                border-radius: 50%;
+                object-fit: cover;
+                margin: 0 auto 15px;
+                display: block;
             }
             """)
         

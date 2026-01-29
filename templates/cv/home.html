@@ -674,11 +674,11 @@
                     {% endif %}
                     
                     <div class="card-actions">
-                        {% if recon.documento %}
-                            <a href="{{ recon.documento }}" target="_blank" class="btn-certificate btn-view">
+                        {% if recon.reconocimiento %}
+                            <a href="{{ recon.reconocimiento }}" target="_blank" class="btn-certificate btn-view">
                                 <i class="fas fa-eye"></i> Ver reconocimiento
                             </a>
-                            <a href="{{ recon.documento }}" class="btn-certificate btn-download" onclick="event.preventDefault(); downloadFile('{{ recon.documento }}', '{{ recon.tiporeconocimiento|slugify }}_reconocimiento.pdf')">
+                            <a href="{{ recon.reconocimiento }}" class="btn-certificate btn-download" onclick="event.preventDefault(); downloadFile('{{ recon.reconocimiento }}', '{{ recon.tiporeconocimiento|slugify }}_reconocimiento.pdf')">
                                 <i class="fas fa-download"></i> Descargar reconocimiento
                             </a>
                         {% else %}
@@ -743,11 +743,11 @@
                     {% endif %}
                     
                     <div class="card-actions">
-                        {% if recon.documento %}
-                            <a href="{{ recon.documento }}" target="_blank" class="btn-certificate btn-view">
+                        {% if recon.reconocimiento %}
+                            <a href="{{ recon.reconocimiento }}" target="_blank" class="btn-certificate btn-view">
                                 <i class="fas fa-eye"></i> Ver reconocimiento
                             </a>
-                            <a href="{{ recon.documento }}" class="btn-certificate btn-download" onclick="event.preventDefault(); downloadFile('{{ recon.documento }}', '{{ recon.tiporeconocimiento|slugify }}_reconocimiento.pdf')">
+                            <a href="{{ recon.reconocimiento }}" class="btn-certificate btn-download" onclick="event.preventDefault(); downloadFile('{{ recon.reconocimiento }}', '{{ recon.tiporeconocimiento|slugify }}_reconocimiento.pdf')">
                                 <i class="fas fa-download"></i> Descargar reconocimiento
                             </a>
                         {% else %}

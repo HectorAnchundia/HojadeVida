@@ -87,7 +87,7 @@ def collect_documents(educacion, cursos, reconocimientos_generales, reconocimien
     if include_education_docs:
         # Documentos de educación
         for edu in educacion:
-            if edu.titulo_documento:
+            if hasattr(edu, 'titulo_documento') and edu.titulo_documento:
                 documentos.append({
                     'url': edu.titulo_documento,
                     'nombre': f"Título: {edu.titulo}",
@@ -97,7 +97,7 @@ def collect_documents(educacion, cursos, reconocimientos_generales, reconocimien
         
         # Documentos de cursos
         for curso in cursos:
-            if curso.certificado:
+            if hasattr(curso, 'certificado') and curso.certificado:
                 documentos.append({
                     'url': curso.certificado,
                     'nombre': f"Certificado: {curso.nombrecurso}",
@@ -109,9 +109,16 @@ def collect_documents(educacion, cursos, reconocimientos_generales, reconocimien
     if include_recognition_docs:
         # Documentos de reconocimientos generales
         for rec in reconocimientos_generales:
-            if rec.documento_reconocimiento:
+            # Intentar diferentes nombres de campo posibles para el documento
+            documento = None
+            for field_name in ['documento_reconocimiento', 'documento', 'certificado', 'archivo']:
+                if hasattr(rec, field_name) and getattr(rec, field_name):
+                    documento = getattr(rec, field_name)
+                    break
+            
+            if documento:
                 documentos.append({
-                    'url': rec.documento_reconocimiento,
+                    'url': documento,
                     'nombre': f"Reconocimiento General: {rec.tiporeconocimiento}",
                     'tipo': 'reconocimiento',
                     'seccion': 'reconocimientos_generales'
@@ -119,9 +126,16 @@ def collect_documents(educacion, cursos, reconocimientos_generales, reconocimien
         
         # Documentos de reconocimientos laborales
         for rec in reconocimientos_laborales:
-            if rec.documento_reconocimiento:
+            # Intentar diferentes nombres de campo posibles para el documento
+            documento = None
+            for field_name in ['documento_reconocimiento', 'documento', 'certificado', 'archivo']:
+                if hasattr(rec, field_name) and getattr(rec, field_name):
+                    documento = getattr(rec, field_name)
+                    break
+            
+            if documento:
                 documentos.append({
-                    'url': rec.documento_reconocimiento,
+                    'url': documento,
                     'nombre': f"Reconocimiento Laboral: {rec.tiporeconocimiento}",
                     'tipo': 'reconocimiento',
                     'seccion': 'reconocimientos_laborales'

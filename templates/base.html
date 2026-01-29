@@ -16,10 +16,18 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/sections.css' %}">
     <link rel="stylesheet" href="{% static 'css/sidebar-icons.css' %}">
-    <link rel="stylesheet" href="{% static 'css/pdf-export-new.css' %}">
+    {% if not garaje_mode %}
+    <link rel="stylesheet" href="{% static 'css/pdf-export-optimized.css' %}">
+    {% endif %}
     {% block extra_css %}{% endblock %}
+    
+    <!-- Token CSRF para JavaScript -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 <body {% if garaje_mode %}class="garaje-mode"{% endif %}>
+    <!-- CSRF Token para formularios -->
+    {% csrf_token %}
+    
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
@@ -117,7 +125,7 @@
     <!-- Scripts optimizados -->
     {% if not garaje_mode %}
     <script src="{% static 'js/cloudinary-handler-light.js' %}" defer></script>
-    <script src="{% static 'js/pdf-export-light.js' %}" defer></script>
+    <script src="{% static 'js/pdf-export-csrf-fixed.js' %}" defer></script>
     {% endif %}
     
     {% block extra_js %}{% endblock %}

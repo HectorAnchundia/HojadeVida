@@ -1,98 +1,114 @@
 /**
- * Estilos para el panel de exportación de PDF
+ * Estilos mejorados para el panel de exportación de PDF
+ * Estos estilos aseguran que el panel sea visible y accesible
  */
 
-/* Panel flotante */
+/* Contenedor principal del panel de exportación */
 .pdf-export-panel-container {
     position: fixed;
-    right: 0;
     top: 50%;
+    right: 0;
     transform: translateY(-50%);
     z-index: 1000;
+    display: flex;
     transition: all 0.3s ease;
+}
+
+/* Hacer que el panel sea más visible */
+.pdf-export-panel-container.force-visible {
+    right: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    box-shadow: -3px 0 15px rgba(0, 0, 0, 0.3);
 }
 
 /* Pestaña para mostrar/ocultar el panel */
 .pdf-export-tab {
-    background-color: #0047ab; /* Azul cobalto */
+    background-color: var(--primary-color, #0047AB);
     color: white;
-    padding: 10px 15px;
-    border-radius: 8px 0 0 8px;
+    padding: 10px;
+    border-radius: 5px 0 0 5px;
     cursor: pointer;
-    box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.2);
     writing-mode: vertical-lr;
     transform: rotate(180deg);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
     height: 150px;
-    transition: background-color 0.3s ease;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
 }
 
-.pdf-export-tab:hover {
-    background-color: #003380; /* Un azul más oscuro al pasar el mouse */
+/* Hacer la pestaña más visible */
+.pdf-export-tab {
+    width: 40px;
+    font-weight: bold;
+    font-size: 16px;
 }
 
+/* Icono en la pestaña */
 .pdf-export-tab i {
-    font-size: 1.2rem;
-    transform: rotate(90deg);
+    margin-bottom: 10px;
+    font-size: 18px;
+    transform: rotate(180deg);
 }
 
-/* Panel principal */
+/* Panel de exportación */
 .pdf-export-panel {
-    position: absolute;
-    right: -300px;
-    top: 0;
-    width: 280px;
     background-color: white;
-    border-radius: 8px 0 0 8px;
-    box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.2);
     padding: 15px;
-    transition: right 0.3s ease;
+    border-radius: 5px 0 0 5px;
+    width: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 /* Cuando el panel está activo */
 .pdf-export-panel-container.active .pdf-export-panel {
-    right: 0;
+    width: 280px;
 }
 
 /* Título del panel */
 .pdf-export-panel h5 {
-    color: #0047ab;
     margin-bottom: 15px;
-    font-size: 1.2rem;
-    border-bottom: 1px solid #e0e0e0;
+    color: var(--primary-color, #0047AB);
+    font-weight: bold;
+    border-bottom: 2px solid var(--primary-color, #0047AB);
     padding-bottom: 8px;
 }
 
 /* Opciones de exportación */
 .pdf-export-option {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 /* Subopciones (anidadas) */
 .pdf-export-suboptions {
-    margin-left: 20px;
-    display: none;
-    padding-top: 5px;
+    padding-left: 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
 }
 
 .pdf-export-suboptions.show {
-    display: block;
+    max-height: 300px;
 }
 
-/* Estilos para los checkboxes personalizados */
+/* Contenedor de checkbox personalizado */
 .pdf-checkbox-container {
     display: flex;
     align-items: center;
-    position: relative;
-    padding-left: 30px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 14px;
     user-select: none;
+    width: 100%;
+    margin-bottom: 5px;
 }
 
+/* Ocultar checkbox original */
 .pdf-checkbox-container input {
     position: absolute;
     opacity: 0;
@@ -101,70 +117,57 @@
     width: 0;
 }
 
+/* Crear checkbox personalizado */
 .pdf-checkbox {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 20px;
-    width: 20px;
-    background-color: #f0f0f0;
+    height: 18px;
+    width: 18px;
+    background-color: #eee;
+    border-radius: 3px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
     border: 1px solid #ccc;
-    border-radius: 4px;
 }
 
-.pdf-checkbox-container:hover input ~ .pdf-checkbox {
-    background-color: #e0e0e0;
-}
-
-.pdf-checkbox-container input:checked ~ .pdf-checkbox {
-    background-color: #0047ab;
-    border-color: #0047ab;
-}
-
-.pdf-checkbox:after {
-    content: "";
-    position: absolute;
-    display: none;
-}
-
+/* Indicador de checkbox marcado */
 .pdf-checkbox-container input:checked ~ .pdf-checkbox:after {
+    content: '\2714';
     display: block;
+    color: var(--primary-color, #0047AB);
+    font-size: 14px;
+    font-weight: bold;
 }
 
-.pdf-checkbox-container .pdf-checkbox:after {
-    left: 7px;
-    top: 3px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+/* Estilo al pasar el mouse */
+.pdf-checkbox-container:hover .pdf-checkbox {
+    background-color: #ddd;
 }
 
 /* Botón de exportación */
 .pdf-export-button {
-    background-color: #0047ab;
+    background-color: var(--primary-color, #0047AB);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     padding: 10px 15px;
-    font-size: 0.9rem;
     cursor: pointer;
     width: 100%;
     margin-top: 15px;
+    font-weight: bold;
+    transition: background-color 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    transition: background-color 0.3s ease;
 }
 
 .pdf-export-button:hover {
-    background-color: #003380;
+    background-color: var(--primary-dark, #003380);
 }
 
 .pdf-export-button i {
-    font-size: 1rem;
+    margin-right: 8px;
 }
 
 /* Overlay de carga */
@@ -181,7 +184,7 @@
     z-index: 2000;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.3s, visibility 0.3s;
 }
 
 .pdf-loading-overlay.show {
@@ -191,15 +194,15 @@
 
 .pdf-loading-content {
     background-color: white;
-    padding: 30px;
-    border-radius: 8px;
+    padding: 20px 30px;
+    border-radius: 10px;
     text-align: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .pdf-loading-spinner {
     border: 5px solid #f3f3f3;
-    border-top: 5px solid #0047ab;
+    border-top: 5px solid var(--primary-color, #0047AB);
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -213,68 +216,49 @@
 }
 
 .pdf-loading-text {
-    font-size: 1rem;
-    color: #333;
+    font-size: 16px;
     margin: 0;
+    color: #333;
 }
 
-/* Modo oscuro */
-[data-theme="dark"] .pdf-export-panel {
-    background-color: #333;
-    color: #f0f0f0;
+/* Adaptación a modo oscuro */
+html[data-theme="dark"] .pdf-export-panel {
+    background-color: #222;
+    color: #eee;
 }
 
-[data-theme="dark"] .pdf-export-panel h5 {
-    color: #4e8cff;
-    border-bottom-color: #555;
+html[data-theme="dark"] .pdf-export-panel h5 {
+    color: #4f9cff;
+    border-bottom-color: #4f9cff;
 }
 
-[data-theme="dark"] .pdf-checkbox {
+html[data-theme="dark"] .pdf-checkbox {
     background-color: #444;
     border-color: #666;
 }
 
-[data-theme="dark"] .pdf-checkbox-container:hover input ~ .pdf-checkbox {
+html[data-theme="dark"] .pdf-checkbox-container input:checked ~ .pdf-checkbox:after {
+    color: #4f9cff;
+}
+
+html[data-theme="dark"] .pdf-checkbox-container:hover .pdf-checkbox {
     background-color: #555;
 }
 
-[data-theme="dark"] .pdf-loading-content {
+html[data-theme="dark"] .pdf-loading-content {
     background-color: #333;
-    color: #f0f0f0;
 }
 
-[data-theme="dark"] .pdf-loading-text {
-    color: #f0f0f0;
+html[data-theme="dark"] .pdf-loading-text {
+    color: #eee;
 }
 
-/* Botón flotante en la barra lateral */
-.export-pdf-button {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 60px;
-    background-color: #0047ab;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.export-pdf-button:hover {
-    background-color: #003380;
-}
-
-.export-pdf-button i {
-    font-size: 1.5rem;
-}
-
-/* Responsive */
+/* Estilos para dispositivos móviles */
 @media (max-width: 768px) {
     .pdf-export-panel-container {
         top: auto;
         bottom: 20px;
+        right: 20px;
         transform: none;
     }
     
@@ -282,27 +266,22 @@
         writing-mode: horizontal-tb;
         transform: none;
         height: auto;
-        border-radius: 8px 8px 0 0;
-        padding: 10px 15px;
+        width: auto;
+        border-radius: 50%;
+        padding: 15px;
     }
     
     .pdf-export-tab i {
+        margin: 0;
         transform: none;
     }
     
-    .pdf-export-panel {
-        bottom: -100%;
-        top: auto;
-        right: auto;
-        left: 0;
-        width: 100%;
-        border-radius: 8px 8px 0 0;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-    
     .pdf-export-panel-container.active .pdf-export-panel {
-        bottom: 100%;
-        right: auto;
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        border-radius: 10px;
+        width: 280px;
+        max-height: 60vh;
     }
 }

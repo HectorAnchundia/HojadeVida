@@ -26,8 +26,8 @@
                 <!-- Perfil -->
                 <div class="profile-container">
                     {% if datos_personales %}
-                        {% if datos_personales.varyingpic %}
-                        <img src="{{ datos_personales.varyingpic.url }}" 
+                        {% if datos_personales.imagen_perfil %}
+                        <img src="{{ datos_personales.imagen_perfil }}" 
                              alt="Foto de perfil" 
                              class="profile-image"
                              onerror="this.onerror=null; this.src='{% static 'img/default-profile.png' %}'; this.classList.add('fallback-image');">

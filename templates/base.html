@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{% static 'css/sections.css' %}">
     <link rel="stylesheet" href="{% static 'css/sidebar-icons.css' %}">
     <link rel="stylesheet" href="{% static 'css/export-control.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pdf-export-new.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body {% if garaje_mode %}class="garaje-mode"{% endif %}>
@@ -28,8 +29,8 @@
                 <!-- Perfil -->
                 <div class="profile-container">
                     {% if datos_personales %}
-                        {% if datos_personales.varyingpic %}
-                        <img src="{{ datos_personales.varyingpic.url }}" 
+                        {% if datos_personales.imagen_perfil %}
+                        <img src="{{ datos_personales.imagen_perfil }}" 
                              alt="Foto de perfil" 
                              class="profile-image"
                              onerror="this.onerror=null; this.src='{% static 'img/default-profile.png' %}'; this.classList.add('fallback-image');">
@@ -117,8 +118,7 @@
     <!-- JavaScript personalizado -->
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/validaciones.js' %}"></script>
-    <script src="{% static 'js/export-pdf-unified.js' %}"></script>
-    <script src="{% static 'js/export-control.js' %}"></script>
+    <script src="{% static 'js/pdf-export-init.js' %}"></script>
     <script src="{% static 'js/cloudinary-handler.js' %}"></script>
     
     {% block extra_js %}{% endblock %}

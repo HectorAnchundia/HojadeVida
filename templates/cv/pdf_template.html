@@ -101,6 +101,38 @@
             border-top: 1px solid #ddd;
             padding-top: 10px;
         }
+        .anexo-item {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .anexo-titulo {
+            font-size: 14pt;
+            color: #0066CC;
+            margin-bottom: 10px;
+        }
+        .anexo-imagen {
+            max-width: 100%;
+            max-height: 400px;
+            margin: 10px 0;
+            display: block;
+        }
+        .anexo-pdf {
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .anexo-seccion {
+            font-style: italic;
+            color: #666;
+            margin-top: 5px;
+        }
+        .anexos-section {
+            page-break-before: always;
+        }
     </style>
 </head>
 <body>
@@ -445,6 +477,57 @@
         </div>
         {% endfor %}
         {% endif %}
+        {% endif %}
+        
+        <!-- Sección de Anexos -->
+        {% if options.mostrarAnexos and documentos_anexos %}
+        <div class="anexos-section">
+            <h2 class="section-title">Anexos - Documentos Adjuntos</h2>
+            
+            {% if options.incluirDocumentosEducacion %}
+            <h3 class="subsection-title">Documentos de Educación y Cursos</h3>
+            {% for doc in documentos_anexos %}
+                {% if doc.seccion == 'educacion' or doc.seccion == 'cursos' %}
+                <div class="anexo-item">
+                    <h4 class="anexo-titulo">{{ doc.nombre }}</h4>
+                    
+                    {% if '.pdf' in doc.url|lower %}
+                    <div class="anexo-pdf">
+                        <p>Documento PDF: {{ doc.nombre }}</p>
+                        <p>Este documento se puede visualizar abriendo el archivo PDF original.</p>
+                    </div>
+                    {% else %}
+                    <img src="{{ doc.url }}" alt="{{ doc.nombre }}" class="anexo-imagen">
+                    {% endif %}
+                    
+                    <p class="anexo-seccion">Sección: {{ doc.seccion|title }}</p>
+                </div>
+                {% endif %}
+            {% endfor %}
+            {% endif %}
+            
+            {% if options.incluirDocumentosReconocimientos %}
+            <h3 class="subsection-title">Documentos de Reconocimientos</h3>
+            {% for doc in documentos_anexos %}
+                {% if doc.seccion == 'reconocimientos_generales' or doc.seccion == 'reconocimientos_laborales' %}
+                <div class="anexo-item">
+                    <h4 class="anexo-titulo">{{ doc.nombre }}</h4>
+                    
+                    {% if '.pdf' in doc.url|lower %}
+                    <div class="anexo-pdf">
+                        <p>Documento PDF: {{ doc.nombre }}</p>
+                        <p>Este documento se puede visualizar abriendo el archivo PDF original.</p>
+                    </div>
+                    {% else %}
+                    <img src="{{ doc.url }}" alt="{{ doc.nombre }}" class="anexo-imagen">
+                    {% endif %}
+                    
+                    <p class="anexo-seccion">Sección: {{ doc.seccion|title }}</p>
+                </div>
+                {% endif %}
+            {% endfor %}
+            {% endif %}
+        </div>
         {% endif %}
         
         <!-- Pie de página -->

@@ -21,6 +21,21 @@ from cv.models import DatosPersonales, ExperienciaLaboral, Educacion, CursosReal
 
 logger = logging.getLogger(__name__)
 
+def download_cloudinary_file(url):
+    """
+    Descarga un archivo desde Cloudinary y lo devuelve como un objeto BytesIO
+    """
+    try:
+        response = requests.get(url, stream=True)
+        if response.status_code == 200:
+            return BytesIO(response.content)
+        else:
+            logger.warning(f"No se pudo descargar el archivo de Cloudinary: {url}, código: {response.status_code}")
+            return None
+    except Exception as e:
+        logger.error(f"Error al descargar archivo de Cloudinary: {e}")
+        return None
+
 def prepare_cloudinary_images(html_content):
     """
     Prepara las imágenes de Cloudinary para que WeasyPrint pueda procesarlas correctamente.
@@ -60,80 +75,59 @@ def prepare_cloudinary_images(html_content):
             except Exception as e:
                 logger.error(f"Error al procesar imagen de Cloudinary: {e}")
     
-    # Buscar todos los enlaces a documentos (para anexos)
-    for a in soup.find_all('a', href=True):
-        href = a.get('href', '')
-        
-        # Si es un enlace a un documento en Cloudinary
-        if 'res.cloudinary.com' in href:
-            try:
-                # Limpiar la URL (eliminar versión)
-                clean_href = re.sub(r'/v\d+/', '/', href)
-                
-                # Actualizar el enlace
-                a['href'] = clean_href
-                a['target'] = '_blank'
-                a['data-cloudinary'] = 'true'
-                
-                # Si es un PDF o imagen, intentar incluirlo como anexo
-                if any(ext in href.lower() for ext in ['.pdf', '.jpg', '.jpeg', '.png']):
-                    # Crear un contenedor para el documento
-                    doc_container = soup.new_tag('div')
-                    doc_container['class'] = 'document-container'
-                    
-                    # Añadir título del documento
-                    doc_title = soup.new_tag('h4')
-                    doc_title.string = a.get_text() or "Documento Anexo"
-                    doc_container.append(doc_title)
-                    
-                    if '.pdf' in href.lower():
-                        # Para PDFs, solo añadir un enlace mejorado
-                        pdf_link = soup.new_tag('p')
-                        pdf_link.string = f"Ver documento PDF: {a.get_text()}"
-                        pdf_link['class'] = 'pdf-link'
-                        doc_container.append(pdf_link)
-                    else:
-                        # Para imágenes, descargarlas e incluirlas
-                        try:
-                            response = requests.get(clean_href, stream=True)
-                            if response.status_code == 200:
-                                img_format = href.split('.')[-1].lower()
-                                if img_format not in ['jpg', 'jpeg', 'png', 'gif']:
-                                    img_format = 'jpeg'
-                                
-                                img_data = base64.b64encode(response.content).decode('utf-8')
-                                data_uri = f"data:image/{img_format};base64,{img_data}"
-                                
-                                # Crear imagen para el anexo
-                                doc_img = soup.new_tag('img')
-                                doc_img['src'] = data_uri
-                                doc_img['class'] = 'document-image'
-                                doc_img['alt'] = a.get_text() or "Documento Anexo"
-                                doc_container.append(doc_img)
-                                
-                                # Añadir el contenedor a la sección de anexos
-                                anexos_section = soup.find(id='anexos')
-                                if not anexos_section:
-                                    # Crear sección de anexos si no existe
-                                    anexos_section = soup.new_tag('div')
-                                    anexos_section['id'] = 'anexos'
-                                    anexos_section['class'] = 'section anexos-section'
-                                    
-                                    anexos_title = soup.new_tag('h2')
-                                    anexos_title.string = "Anexos"
-                                    anexos_section.append(anexos_title)
-                                    
-                                    # Añadir al final del body
-                                    soup.body.append(anexos_section)
-                                
-                                anexos_section.append(doc_container)
-                                logger.info(f"Documento de Cloudinary añadido como anexo: {clean_href}")
-                        except Exception as e:
-                            logger.error(f"Error al procesar documento para anexo: {e}")
-            except Exception as e:
-                logger.error(f"Error al procesar enlace a documento de Cloudinary: {e}")
-    
     return str(soup)
+
+def collect_documents(educacion, cursos, reconocimientos_generales, reconocimientos_laborales, include_education_docs, include_recognition_docs):
+    """
+    Recopila todos los documentos adjuntos para incluirlos como anexos
+    """
+    documentos = []
+    
+    # Recopilar documentos de educación si está activada la opción
+    if include_education_docs:
+        # Documentos de educación
+        for edu in educacion:
+            if edu.titulo_documento:
+                documentos.append({
+                    'url': edu.titulo_documento,
+                    'nombre': f"Título: {edu.titulo}",
+                    'tipo': 'titulo',
+                    'seccion': 'educacion'
+                })
+        
+        # Documentos de cursos
+        for curso in cursos:
+            if curso.certificado:
+                documentos.append({
+                    'url': curso.certificado,
+                    'nombre': f"Certificado: {curso.nombrecurso}",
+                    'tipo': 'certificado',
+                    'seccion': 'cursos'
+                })
+    
+    # Recopilar documentos de reconocimientos si está activada la opción
+    if include_recognition_docs:
+        # Documentos de reconocimientos generales
+        for rec in reconocimientos_generales:
+            if rec.documento_reconocimiento:
+                documentos.append({
+                    'url': rec.documento_reconocimiento,
+                    'nombre': f"Reconocimiento General: {rec.tiporeconocimiento}",
+                    'tipo': 'reconocimiento',
+                    'seccion': 'reconocimientos_generales'
+                })
+        
+        # Documentos de reconocimientos laborales
+        for rec in reconocimientos_laborales:
+            if rec.documento_reconocimiento:
+                documentos.append({
+                    'url': rec.documento_reconocimiento,
+                    'nombre': f"Reconocimiento Laboral: {rec.tiporeconocimiento}",
+                    'tipo': 'reconocimiento',
+                    'seccion': 'reconocimientos_laborales'
+                })
+    
+    return documentos
 
 @require_POST
 def generate_pdf(request):
@@ -185,6 +179,16 @@ def generate_pdf(request):
         productos_academicos = [] if not include_academic else ProductosAcademicos.objects.filter(public=True)
         productos_laborales = [] if not include_products else ProductosLaborales.objects.filter(public=True).order_by('-fechaproducto')
         
+        # Recopilar documentos para anexos
+        documentos_anexos = collect_documents(
+            educacion, 
+            cursos, 
+            reconocimientos_generales, 
+            reconocimientos_laborales,
+            include_education_docs,
+            include_recognition_docs
+        )
+        
         # Preparar opciones para la plantilla
         options = {
             'datosPersonales': include_personal,
@@ -199,7 +203,8 @@ def generate_pdf(request):
             'reconocimientosLaborales': include_work_recognition,
             'incluirDocumentosEducacion': include_education_docs,
             'incluirDocumentosReconocimientos': include_recognition_docs,
-            'incluirImagenes': include_all_images
+            'incluirImagenes': include_all_images,
+            'mostrarAnexos': (include_education_docs or include_recognition_docs) and len(documentos_anexos) > 0
         }
         
         # Preparar contexto para la plantilla
@@ -212,6 +217,7 @@ def generate_pdf(request):
             'reconocimientos_laborales': reconocimientos_laborales,
             'productos_academicos': productos_academicos,
             'productos_laborales': productos_laborales,
+            'documentos_anexos': documentos_anexos,
             'options': options,
             'include_images': include_all_images,
         }
@@ -351,6 +357,34 @@ def generate_pdf(request):
             }
             .en-curso {
                 background-color: #28a745;
+            }
+            .anexo-item {
+                margin: 20px 0;
+                padding: 15px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+            .anexo-titulo {
+                font-size: 14pt;
+                color: #0066CC;
+                margin-bottom: 10px;
+            }
+            .anexo-imagen {
+                max-width: 100%;
+                max-height: 400px;
+                margin: 10px 0;
+                display: block;
+            }
+            .anexo-pdf {
+                padding: 10px;
+                background-color: #f5f5f5;
+                border-radius: 5px;
+                margin: 10px 0;
+            }
+            .anexo-seccion {
+                font-style: italic;
+                color: #666;
+                margin-top: 5px;
             }
             """)
         

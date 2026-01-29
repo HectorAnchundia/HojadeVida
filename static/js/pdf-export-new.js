@@ -8,11 +8,19 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Inicializando sistema avanzado de exportación de PDF');
     
-    // Crear el panel de exportación de PDF
-    crearPanelExportacion();
+    // Comprobar si estamos en la vista de garaje
+    const isGarajePage = document.body.classList.contains('garaje-mode');
     
-    // Inicializar eventos
-    inicializarEventos();
+    // Solo crear el panel de exportación si NO estamos en la vista de garaje
+    if (!isGarajePage) {
+        // Crear el panel de exportación de PDF
+        crearPanelExportacion();
+        
+        // Inicializar eventos
+        inicializarEventos();
+    } else {
+        console.log('Vista de garaje detectada, no se mostrará el panel de exportación de PDF');
+    }
 });
 
 /**
